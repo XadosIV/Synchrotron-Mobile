@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.dubert.synchrotron.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_favs"
+        android:name="com.dubert.synchrotron.ui.favs.FavsFragment"
+        android:label="@string/menu_favs"
+        tools:layout="@layout/fragment_favs" />
+
+    <fragment
+        android:id="@+id/nav_lines"
+        android:name="com.dubert.synchrotron.ui.lines.LinesFragment"
+        android:label="@string/menu_lines"
+        tools:layout="@layout/fragment_lines" />
+
+    <fragment
+        android:id="@+id/nav_ticket"
+        android:name="com.dubert.synchrotron.ui.ticket.TicketFragment"
+        android:label="@string/menu_ticket"
+        tools:layout="@layout/fragment_ticket" />
+</navigation>
