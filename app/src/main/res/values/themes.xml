@@ -6,4 +6,13 @@
     </style>
 
     <style name="Theme.Synchrotron" parent="Base.Theme.Synchrotron" />
+
+    <style name="Theme.Synchrotron.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.Synchrotron.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.Synchrotron.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
