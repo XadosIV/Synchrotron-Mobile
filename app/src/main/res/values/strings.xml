@@ -12,4 +12,10 @@
     <string name="menu_favs">Favoris</string>
     <string name="menu_lines">Lignes et arrêts</string>
     <string name="menu_ticket">Acheter un ticket</string>
+
+    <string name="ticket_text_1">L\'achat de ticket est possible par SMS !</string>
+    <string name="ticket_text_2">Le ticket est valable pour l\'heure suivant son achat.</string>
+    <string name="ticket_prix">(1.30€)</string>
+
+    <string name="historique_text">Historique</string>
 </resources>
