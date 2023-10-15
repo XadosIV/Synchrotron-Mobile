@@ -31,7 +31,7 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private fun getLinesData(): ArrayList<Arret> {
+    private fun getArretData(): ArrayList<Arret> {
         val list = arrayListOf<Arret>()
 
         list.add(Arret('A', "UJACO1"))
@@ -63,7 +63,7 @@ class HomeFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = ArretAdapter(arrayListOf())
 
-        dataList = getLinesData() // TODO : REPLACE WITH LIST FROM DATABASE
+        dataList = getArretData() // TODO : REPLACE WITH LIST FROM DATABASE
         searchList = arrayListOf()
 
         searchView.clearFocus()
