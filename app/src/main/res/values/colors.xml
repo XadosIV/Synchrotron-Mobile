@@ -5,6 +5,7 @@
     <color name="primaryColor">#AB4454</color>
     <color name="secondaryColor">#8E3945</color>
     <color name="gray">#D9D9D9</color>
+    <color name="lightgray">#E6E6E6</color>
     <color name="green">#246046</color>
     <color name="lightblue">#8692F7</color>
 </resources>
