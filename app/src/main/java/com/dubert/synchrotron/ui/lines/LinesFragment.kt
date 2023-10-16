@@ -5,7 +5,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.view.isVisible
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -61,8 +63,14 @@ class LinesFragment : Fragment() {
         recyclerView.adapter = LineAdapter(getLinesData(), recyclerView)
         LineAdapter.setOnClickListener(object :
             LineAdapter.OnClickListener {
-            override fun onClick(view1: RecyclerView) {
+            override fun onClick(view1: RecyclerView, image: ImageView) {
                 view1.isVisible = !view1.isVisible
+                if (view1.isVisible){
+                    image.setImageResource(R.drawable.ic_arrow_up)
+                } else {
+                    image.setImageResource(R.drawable.ic_arrow_down)
+                }
+
             }
         })
 

@@ -22,7 +22,7 @@
             android:padding="5dp"
             android:text="@string/ticket_text_1"
             android:textAlignment="center"
-            android:textColor="@color/black"
+            android:textColor="@color/primaryColor"
             android:textSize="40sp"
             android:textStyle="bold" />
 

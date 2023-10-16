@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.MotionEventCompat
 import androidx.core.view.isVisible
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -39,8 +40,8 @@ class LineAdapter (private val linesList : ArrayList<Line>, private val recycler
         holder.terminus2Text.text = currentItem.terminus2 // TODO : REPLACE WITH NAME FROM DATABASE
 
         holder.arretsRecyclerView.setHasFixedSize(true)
+        holder.arretsRecyclerView.isVisible = false
         holder.arretsRecyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
-        holder.arretsRecyclerView.isNestedScrollingEnabled = false
         holder.arretsRecyclerView.adapter = ArretAdapter(currentItem.arrets) // TODO : REPLACE WITH LIST FROM DATABASE
 
 
@@ -66,7 +67,7 @@ class LineAdapter (private val linesList : ArrayList<Line>, private val recycler
 
         holder.itemView.setOnClickListener {
             if (onClickListener != null) {
-                onClickListener!!.onClick(holder.arretsRecyclerView)
+                onClickListener!!.onClick(holder.arretsRecyclerView, holder.arrow)
             }
         }
 
@@ -79,7 +80,7 @@ class LineAdapter (private val linesList : ArrayList<Line>, private val recycler
         }
     }
     interface OnClickListener {
-        fun onClick(view1 : RecyclerView)
+        fun onClick(view1 : RecyclerView, image : ImageView)
     }
 
 
@@ -89,5 +90,6 @@ class LineAdapter (private val linesList : ArrayList<Line>, private val recycler
         val terminus1Text : TextView = itemView.findViewById(R.id.terminus1Text)
         val terminus2Text : TextView = itemView.findViewById(R.id.terminus2Text)
         val arretsRecyclerView : RecyclerView = itemView.findViewById(R.id.arrets_recycler_view)
+        val arrow : ImageView = itemView.findViewById(R.id.button_list)
     }
 }
