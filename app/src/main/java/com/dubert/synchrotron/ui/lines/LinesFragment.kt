@@ -58,13 +58,11 @@ class LinesFragment : Fragment() {
         recyclerView = root.findViewById(R.id.lines_recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        recyclerView.adapter = LineAdapter(getLinesData())
-
+        recyclerView.adapter = LineAdapter(getLinesData(), recyclerView)
         LineAdapter.setOnClickListener(object :
             LineAdapter.OnClickListener {
             override fun onClick(view1: RecyclerView) {
                 view1.isVisible = !view1.isVisible
-                Log.i("EHOOOO", view1.isVisible.toString())
             }
         })
 

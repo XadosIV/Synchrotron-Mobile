@@ -2,15 +2,17 @@ package com.dubert.synchrotron
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.MotionEventCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class LineAdapter (private val linesList : ArrayList<Line>) : RecyclerView.Adapter<LineAdapter.ViewHolder>() {
+class LineAdapter (private val linesList : ArrayList<Line>, private val recyclerView: RecyclerView) : RecyclerView.Adapter<LineAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_line, parent, false)
         return ViewHolder(itemView)
@@ -38,14 +40,36 @@ class LineAdapter (private val linesList : ArrayList<Line>) : RecyclerView.Adapt
 
         holder.arretsRecyclerView.setHasFixedSize(true)
         holder.arretsRecyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
+        holder.arretsRecyclerView.isNestedScrollingEnabled = false
         holder.arretsRecyclerView.adapter = ArretAdapter(currentItem.arrets) // TODO : REPLACE WITH LIST FROM DATABASE
+
+
+        // On désactive le défilement du parent quand l'enfant s'apprête à être scroller
+        holder.arretsRecyclerView.setOnTouchListener (object:View.OnTouchListener{
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean{
+                if (v != null) {
+                    if (v.id == holder.arretsRecyclerView.id){
+                        if (event != null) {
+                            if (event.actionMasked == MotionEvent.ACTION_UP){
+                                recyclerView.requestDisallowInterceptTouchEvent(false)
+                            }else{
+                                recyclerView.requestDisallowInterceptTouchEvent(true)
+                            }
+                        }
+                    }
+                }
+
+                return true
+            }
+        })
+
 
         holder.itemView.setOnClickListener {
             if (onClickListener != null) {
                 onClickListener!!.onClick(holder.arretsRecyclerView)
-                Log.i("EEEEEEEEH", holder.arretsRecyclerView.isVisible.toString())
             }
         }
+
     }
 
     companion object {

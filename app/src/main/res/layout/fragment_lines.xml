@@ -22,12 +22,18 @@
         <Space
             android:layout_width="20dp"
             android:layout_height="20dp" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/lines_recycler_view"
-            android:layout_width="0dp"
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/lines_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </androidx.core.widget.NestedScrollView>
+
 
         <Space
             android:layout_width="20dp"
