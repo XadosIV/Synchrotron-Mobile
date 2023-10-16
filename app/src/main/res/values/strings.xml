@@ -16,6 +16,11 @@
     <string name="ticket_text_1">L\'achat de ticket est possible par SMS !</string>
     <string name="ticket_text_2">Le ticket est valable pour l\'heure suivant son achat.</string>
     <string name="ticket_prix">(1.30€)</string>
+    <string name="ticket_confirm">Confirmer Achat</string>
+    <string name="ticket_confirm_text">Êtes vous sûrs de vouloir acheter un ticket ?</string>
 
     <string name="historique_text">Historique</string>
+
+    <string name="oui">Oui</string>
+    <string name="non">Non</string>
 </resources>
