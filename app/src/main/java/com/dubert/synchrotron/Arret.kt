@@ -1,3 +1,7 @@
 package com.dubert.synchrotron
 
-data class Arret(var line : Char, var code : String)
+class Arret(var line : Char, var code : String) {
+    fun getNextBus(): String {
+        return "5" // TODO : REPLACE WITH REAL NUMBER
+    }
+}
