@@ -30,7 +30,7 @@ class ArretAdapter (private val arretsList : ArrayList<Arret>) : RecyclerView.Ad
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentItem = arretsList[position]
         holder.lineLogo.setImageResource(charToLineLogo(currentItem.line))
-        holder.lineText.text = "Ligne : " + currentItem.line.uppercase()
+        holder.lineText.text = "Prochain bus dans : " + currentItem.getNextBus() + " minutes"
         holder.nameArret.text = currentItem.code // TODO : REPLACE WITH NAME FROM DATABASE
         holder.favLogo.setImageResource((R.drawable.ic_star)) // TODO : REPLACE WITH CHECK IF IS FAVORITE OR NOT
     }
