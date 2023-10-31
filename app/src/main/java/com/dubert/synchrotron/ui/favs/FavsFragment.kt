@@ -7,10 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.dubert.synchrotron.model.Arret
 import com.dubert.synchrotron.ArretAdapter
 import com.dubert.synchrotron.R
 import com.dubert.synchrotron.databinding.FragmentHomeBinding
+import com.dubert.synchrotron.model.Line
+import com.dubert.synchrotron.storage.ArretJSONFileStorage
 
 class FavsFragment : Fragment() {
 
@@ -24,9 +25,28 @@ class FavsFragment : Fragment() {
     private lateinit var recyclerView : RecyclerView
 
     private fun getFavData(): ArrayList<String> {
-        val list = arrayListOf<String>()
+        val arretStorage = context?.let { ArretJSONFileStorage.getInstance(it) }
+        val lines = arretStorage!!.getLines()
+        val listLines = arrayListOf<Line>()
+        val letters = arrayOf('A', 'B', 'C', 'D');
+        for (letter in letters) {
+            listLines.add(lines.getValue(letter))
+        }
 
-        return list
+        val listFavorites = arrayListOf<String>()
+        for (line in listLines) {
+            for (arretCode in line.arrets) {
+                val arret = arretStorage.findByCode(arretCode)
+                if (arret != null) {
+                    if (arretCode !in listFavorites && !arret.isOpposite) {
+                        if (arret.isFavorite) {
+                            listFavorites.add(arretCode)
+                        }
+                    }
+                }
+            }
+        }
+        return listFavorites
     }
 
     override fun onCreateView(
