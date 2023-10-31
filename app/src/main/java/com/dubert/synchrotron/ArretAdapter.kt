@@ -6,8 +6,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.dubert.synchrotron.model.Arret
+import com.dubert.synchrotron.model.Line
 
-class ArretAdapter (private val arretsList : ArrayList<Arret>) : RecyclerView.Adapter<ArretAdapter.ViewHolder>() {
+class ArretAdapter (private val arretsList : ArrayList<String>) : RecyclerView.Adapter<ArretAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_arret, parent, false)
         return ViewHolder(itemView)
@@ -17,21 +19,13 @@ class ArretAdapter (private val arretsList : ArrayList<Arret>) : RecyclerView.Ad
         return arretsList.size
     }
 
-    fun charToLineLogo(line : Char): Int {
-        return when (line.uppercaseChar()){
-            'A' -> R.drawable.line_a
-            'B' -> R.drawable.line_b
-            'C' -> R.drawable.line_c
-            'D' -> R.drawable.line_d
-            else -> R.drawable.ic_star //debug case
-        }
-    }
+
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val currentItem = arretsList[position]
-        holder.lineLogo.setImageResource(charToLineLogo(currentItem.line))
-        holder.lineText.text = "Prochain bus dans : " + currentItem.getNextBus() + " minutes"
-        holder.nameArret.text = currentItem.code // TODO : REPLACE WITH NAME FROM DATABASE
+        //val currentItem = arretsList[position]
+        //holder.lineLogo.setImageResource(Line.charToLineLogo('A'))
+        holder.lineText.text = "Prochain bus dans :  minutes"
+        holder.nameArret.text = "caca" //currentItem.code // TODO : REPLACE WITH NAME FROM DATABASE
         holder.favLogo.setImageResource((R.drawable.ic_star)) // TODO : REPLACE WITH CHECK IF IS FAVORITE OR NOT
     }
 

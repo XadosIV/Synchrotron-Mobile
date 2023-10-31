@@ -9,7 +9,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.dubert.synchrotron.Arret
+import com.dubert.synchrotron.model.Arret
 import com.dubert.synchrotron.ArretAdapter
 import com.dubert.synchrotron.R
 import com.dubert.synchrotron.databinding.FragmentHomeBinding
@@ -34,11 +34,6 @@ class HomeFragment : Fragment() {
     private fun getArretData(): ArrayList<Arret> {
         val list = arrayListOf<Arret>()
 
-        list.add(Arret('A', "UJACO1"))
-        list.add(Arret('B', "ROCNO1"))
-        list.add(Arret('C', "DEGAC1"))
-        list.add(Arret('D', "PLASP1"))
-
         return list
     }
 
@@ -58,7 +53,7 @@ class HomeFragment : Fragment() {
             historiqueText.text = "Historique"
         }
 
-        recyclerView = root.findViewById(R.id.arrets_recycler_view)
+        /*recyclerView = root.findViewById(R.id.arrets_recycler_view)
         searchView = root.findViewById(R.id.search_home)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = ArretAdapter(arrayListOf())
@@ -75,11 +70,11 @@ class HomeFragment : Fragment() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 searchList.clear()
-                val searchText = newText!!.toLowerCase(Locale.getDefault())
+                val searchText = newText!!.lowercase(Locale.getDefault())
                 if (searchText.isNotEmpty()) {
                     dataList.forEach{
-                        if (it.code.toLowerCase(Locale.getDefault()).contains(searchText)) {
-                            searchList.add(it)
+                        if (it.code.lowercase(Locale.getDefault()).contains(searchText)) {
+                            searchList.add(it.code)
                         }
                     }
                     recyclerView.adapter!!.notifyDataSetChanged()
@@ -90,7 +85,7 @@ class HomeFragment : Fragment() {
                 recyclerView.adapter = ArretAdapter(searchList)
                 return false
             }
-        })
+        })*/
         return root
     }
 

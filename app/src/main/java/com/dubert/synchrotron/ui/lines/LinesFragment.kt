@@ -1,18 +1,16 @@
 package com.dubert.synchrotron.ui.lines
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.view.isVisible
-import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.dubert.synchrotron.Arret
-import com.dubert.synchrotron.Line
+import com.dubert.synchrotron.model.Arret
+import com.dubert.synchrotron.model.Line
 import com.dubert.synchrotron.LineAdapter
 import com.dubert.synchrotron.R
 import com.dubert.synchrotron.databinding.FragmentHomeBinding
@@ -31,20 +29,13 @@ class LinesFragment : Fragment() {
     private fun getArretsData(line : Char): ArrayList<Arret> {
         val list = arrayListOf<Arret>()
 
-        list.add(Arret(line, "UJACO1"))
-        list.add(Arret(line, "ROCNO1"))
-        list.add(Arret(line, "DEGAC1"))
-        list.add(Arret(line, "PLASP1"))
+
 
         return list
     }
     private fun getLinesData(): ArrayList<Line> {
         val list = arrayListOf<Line>()
 
-        list.add(Line('A', "BOISS1", "BOISS2", getArretsData('A')))
-        list.add(Line('B', "DUCS2", "PTDRTKI", getArretsData('B')))
-        list.add(Line('C', "DUCS1", "DUCS2", getArretsData('C')))
-        list.add(Line('D', "CHALL2", "CHALL1", getArretsData('D')))
 
         return list
     }
