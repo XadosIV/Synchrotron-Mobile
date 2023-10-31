@@ -4,26 +4,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.dubert.synchrotron.model.Arret
 import com.dubert.synchrotron.ArretAdapter
 import com.dubert.synchrotron.R
 import com.dubert.synchrotron.databinding.FragmentHomeBinding
+import com.dubert.synchrotron.model.Line
+import com.dubert.synchrotron.storage.ArretJSONFileStorage
 import java.util.Locale
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private lateinit var searchView: SearchView
-    private lateinit var dataList: ArrayList<Arret>
-    private lateinit var searchList: ArrayList<Arret>
-
-    private lateinit var historiqueList : ArrayList<Arret>
-    private lateinit var historiqueText : TextView
+    private lateinit var dataList: ArrayList<String>
+    private lateinit var searchList: ArrayList<String>
 
     private lateinit var recyclerView : RecyclerView
 
@@ -31,9 +28,25 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private fun getArretData(): ArrayList<Arret> {
-        val list = arrayListOf<Arret>()
+    private fun getArretData(): ArrayList<String> {
+        val arretStorage = context?.let { ArretJSONFileStorage.getInstance(it) }
+        val lines = arretStorage!!.getLines()
+        val listLines = arrayListOf<Line>()
+        val letters = arrayOf('A', 'B', 'C', 'D');
+        for (letter in letters) {
+            listLines.add(lines.getValue(letter))
+        }
 
+        val list = arrayListOf<String>()
+        for (line in listLines) {
+            for (arret in line.arrets) {
+                arretStorage.findByCode(arret)?.let {
+                    if (arret !in list && !(it.isOpposite)) {
+                        list.add(arret)
+                    }
+                }
+            }
+        }
         return list
     }
 
@@ -45,15 +58,7 @@ class HomeFragment : Fragment() {
 
         val root = inflater.inflate(R.layout.fragment_home, container, false)
 
-        historiqueList = arrayListOf() // TODO : REPLACE WITH LIST FROM DATABASE
-        historiqueText = root.findViewById(R.id.historique_text)
-        if (historiqueList.isEmpty()) {
-            historiqueText.text = ""
-        } else {
-            historiqueText.text = "Historique"
-        }
-
-        /*recyclerView = root.findViewById(R.id.arrets_recycler_view)
+        recyclerView = root.findViewById(R.id.arrets_recycler_view)
         searchView = root.findViewById(R.id.search_home)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = ArretAdapter(arrayListOf())
@@ -73,8 +78,8 @@ class HomeFragment : Fragment() {
                 val searchText = newText!!.lowercase(Locale.getDefault())
                 if (searchText.isNotEmpty()) {
                     dataList.forEach{
-                        if (it.code.lowercase(Locale.getDefault()).contains(searchText)) {
-                            searchList.add(it.code)
+                        if (it.lowercase(Locale.getDefault()).startsWith(searchText)) {
+                            searchList.add(it)
                         }
                     }
                     recyclerView.adapter!!.notifyDataSetChanged()
@@ -85,7 +90,7 @@ class HomeFragment : Fragment() {
                 recyclerView.adapter = ArretAdapter(searchList)
                 return false
             }
-        })*/
+        })
         return root
     }
 

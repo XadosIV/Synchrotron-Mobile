@@ -9,11 +9,11 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.dubert.synchrotron.model.Arret
 import com.dubert.synchrotron.model.Line
 import com.dubert.synchrotron.LineAdapter
 import com.dubert.synchrotron.R
 import com.dubert.synchrotron.databinding.FragmentHomeBinding
+import com.dubert.synchrotron.storage.ArretJSONFileStorage
 
 class LinesFragment : Fragment() {
 
@@ -26,17 +26,14 @@ class LinesFragment : Fragment() {
 
     private lateinit var recyclerView : RecyclerView
 
-    private fun getArretsData(line : Char): ArrayList<Arret> {
-        val list = arrayListOf<Arret>()
-
-
-
-        return list
-    }
     private fun getLinesData(): ArrayList<Line> {
+        val arretStorage = context?.let { ArretJSONFileStorage.getInstance(it) }
+        val lines = arretStorage!!.getLines()
         val list = arrayListOf<Line>()
-
-
+        val letters = arrayOf('A', 'B', 'C', 'D');
+        for (letter in letters) {
+            list.add(lines.getValue(letter))
+        }
         return list
     }
 

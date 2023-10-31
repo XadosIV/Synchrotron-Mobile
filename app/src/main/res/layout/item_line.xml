@@ -50,7 +50,7 @@
                     android:layout_weight="1"
                     android:text="UNIVERSITE JACOB - "
                     android:textColor="@color/black"
-                    android:textSize="20sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/terminus2Text"
@@ -59,7 +59,7 @@
                     android:layout_weight="1"
                     android:text="PLAGE"
                     android:textColor="@color/black"
-                    android:textSize="20sp" />
+                    android:textSize="18sp" />
 
                 <ImageView
                     android:id="@+id/button_list"
