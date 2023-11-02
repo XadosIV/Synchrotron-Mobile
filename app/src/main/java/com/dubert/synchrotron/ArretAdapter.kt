@@ -46,7 +46,7 @@ class ArretAdapter (private val arretsList : ArrayList<String>) : RecyclerView.A
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val arretStorage = ArretJSONFileStorage.getInstance(holder.itemView.context)
         val currentItem = arretStorage.findByCode(arretsList[position])
-
+        Log.i("FIX", ""+currentItem?.name)
         holder.lineText.text = "Prochain bus dans : " + getNextBus(arretsList[position], holder.itemView.context) + " minutes"
         if (currentItem != null) {
             holder.nameArret.text = currentItem.name

@@ -1,6 +1,7 @@
 package com.dubert.synchrotron
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -61,7 +62,7 @@ class MainActivity : AppCompatActivity() {
                 Response.Listener { response ->
                     val tab = response.getJSONArray(letter.toString())
                     val arretStorage = ArretJSONFileStorage.getInstance(this)
-                    val l = ArrayList<String>()
+                    val arretList = ArrayList<String>()
 
                     for (i in 0 until tab.length()){
                         val lineJson = tab.getJSONObject(i)
@@ -71,7 +72,7 @@ class MainActivity : AppCompatActivity() {
                         for (j in 0 until arretsJson.length()){
                             val arret = arretsJson.getJSONObject(j)
                             val code = arret.getString("id")
-                            l.add(code)
+                            arretList.add(code)
 
                             if (arretStorage.findByCode(code) == null){
                                 var oppositeCode = ""
@@ -105,7 +106,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
 
-                    arretStorage.getLines()[letter] = Line(letter, l, Line.charToLineLogo(letter))
+                    arretStorage.getLines()[letter] = Line(letter, arretList, Line.charToLineLogo(letter))
 
 
                 },

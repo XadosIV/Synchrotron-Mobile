@@ -3,6 +3,7 @@ package com.dubert.synchrotron
 import android.content.Intent
 import android.location.Location
 import android.location.LocationManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -18,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dubert.synchrotron.model.Arret
 import com.dubert.synchrotron.model.Line
 import com.dubert.synchrotron.storage.ArretJSONFileStorage
+import java.lang.Math.pow
+import java.lang.Math.sqrt
 
 
 class LineAdapter(private val linesList: ArrayList<Line>, private val recyclerView: RecyclerView, private val location: Location?) : RecyclerView.Adapter<LineAdapter.ViewHolder>() {
@@ -37,7 +40,8 @@ class LineAdapter(private val linesList: ArrayList<Line>, private val recyclerVi
     fun getTerminus(arrets: ArrayList<Arret>): ArrayList<Arret> {
         val list = arrayListOf<Arret>()
         for (arret in arrets){
-            if (arret.isTerminus){
+            Log.i("GETTERMINUS", arret.name + " " + arret.isTerminus)
+            if (arret.isTerminus && arret !in list){
                 list.add(arret)
             }
         }
@@ -62,6 +66,7 @@ class LineAdapter(private val linesList: ArrayList<Line>, private val recyclerVi
 
         holder.lineLogo.setImageResource(Line.charToLineLogo(currentItem.name))
         holder.terminus1Text.text = terminusList[0].name
+
         if (terminusList.size == 2) {
             holder.terminus2Text.text = terminusList[1].name
         } else {
@@ -69,6 +74,7 @@ class LineAdapter(private val linesList: ArrayList<Line>, private val recyclerVi
             // Encore une fois, le seul terminus non récupéré est celui-ci ??
             // Ca n'a pas de sens, à essayer de fix plus tard, mais pas compris pourquoi
         }
+
 
         holder.arretsRecyclerView.setHasFixedSize(true)
         holder.arretsRecyclerView.isVisible = false
@@ -122,8 +128,10 @@ class LineAdapter(private val linesList: ArrayList<Line>, private val recyclerVi
         }
         var arretMin = "Aucun"
         var minDistance = calculDistance(arretsList.iterator().next().value)
+
         for (arret in arretsList) {
             var dist = calculDistance(arret.value)
+            Log.i("NOM", arret.key + " " + dist)
             if (dist != null) {
                 if (dist < minDistance!!) {
                     minDistance = dist
@@ -134,11 +142,11 @@ class LineAdapter(private val linesList: ArrayList<Line>, private val recyclerVi
         return arretMin
     }
 
-    fun calculDistance(value: Array<Double>): Float? {
-        val arretLocation = Location(LocationManager.GPS_PROVIDER)
-        arretLocation.latitude = value[0]
-        arretLocation.longitude = value[1]
-        return location?.let { arretLocation.distanceTo(it) }
+    fun calculDistance(value: Array<Double>): Double? {
+        val lon = location?.longitude
+        val lat = location?.latitude
+
+        return sqrt( pow((lon!! - value[0]),2.0) + pow((lat!! - value[1]),2.0) )
     }
 
     companion object {
