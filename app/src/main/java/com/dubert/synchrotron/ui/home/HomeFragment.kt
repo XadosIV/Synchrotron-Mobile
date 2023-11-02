@@ -1,6 +1,7 @@
 package com.dubert.synchrotron.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,19 +31,20 @@ class HomeFragment : Fragment() {
 
     private fun getArretData(): ArrayList<String> {
         val arretStorage = context?.let { ArretJSONFileStorage.getInstance(it) }
-        val lines = arretStorage!!.getLines()
         val listLines = arrayListOf<Line>()
         val letters = arrayOf('A', 'B', 'C', 'D');
         for (letter in letters) {
-            listLines.add(lines.getValue(letter))
+            arretStorage!!.getLine(letter)?.let { listLines.add(it) }
         }
 
         val list = arrayListOf<String>()
         for (line in listLines) {
             for (arret in line.arrets) {
-                arretStorage.findByCode(arret)?.let {
-                    if (arret !in list && !(it.isOpposite)) {
-                        list.add(arret)
+                if (arretStorage != null) {
+                    arretStorage.findByCode(arret)?.let {
+                        if (arret !in list && !(it.isOpposite)) {
+                            list.add(arret)
+                        }
                     }
                 }
             }

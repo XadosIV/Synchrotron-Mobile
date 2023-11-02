@@ -1,13 +1,18 @@
 package com.dubert.synchrotron
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.Response
@@ -25,22 +30,17 @@ class ArretAdapter (private val arretsList : ArrayList<String>) : RecyclerView.A
         return arretsList.size
     }
 
-    fun getNextBus(code: String, context: Context): Int { //TODO à faire jsp comment faire
-        val queue = Volley.newRequestQueue(context)
-        val url = "https://live.synchro-bus.fr/" + code
-
-        val jsonObjectRequest = JsonObjectRequest(
-            Request.Method.GET, url, null,
-                Response.Listener { response ->
-                    Log.i("RESULTAT", response.toString())
-            },
-                Response.ErrorListener { error ->
-                    Toast.makeText(context, "Website didn't respond", Toast.LENGTH_LONG).show();
+    fun getNextBus(code: String, context: Context): Int {
+        ContentScrapper.getHTMLData(MainActivity(),"https://live.synchro-bus.fr/" + code ,object : ContentScrapper.ScrapListener{
+            override fun onResponse(html: String?) {
+                if(html != null) {
+                    //TODO: RECUPERE LE PROCHAIN BUS
+                } else {
+                    Toast.makeText(context,"Not found",Toast.LENGTH_LONG).show()
+                }
             }
-        )
-        // Add the request to the RequestQueue.
-        queue.add(jsonObjectRequest)
-        return 0
+        })
+        return 0 //TODO: CHANGE
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -58,12 +58,19 @@ class ArretAdapter (private val arretsList : ArrayList<String>) : RecyclerView.A
                 holder.favLogo.setImageResource((R.drawable.ic_star_empty))
             }
         }
+
+        /*holder.itemView.setOnClickListener {
+            val myIntent = Intent(holder.itemView.context, NextBusActivity::class.java)
+            myIntent.putExtra("codeArret", arretsList[position]) //Optional parameters
+            holder.itemView.context.startActivity(myIntent)
+        }*/ //TODO: Listener
     }
 
+
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        //val lineLogo : ImageView = itemView.findViewById(R.id.lineLogo)
         val lineText : TextView = itemView.findViewById(R.id.lineText)
         val nameArret : TextView = itemView.findViewById(R.id.nameArret)
         val favLogo : ImageView = itemView.findViewById(R.id.favLogo)
+        //val buttonCheat : Button = itemView.findViewById(R.id.buttonCheat)
     }
 }

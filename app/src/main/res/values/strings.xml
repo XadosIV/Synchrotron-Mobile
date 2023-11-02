@@ -19,7 +19,7 @@
     <string name="ticket_confirm">Confirmer l\'achat</string>
     <string name="ticket_confirm_text">Êtes vous sûrs de vouloir acheter un ticket ?</string>
 
-    <string name="historique_text">Historique</string>
+    <string name="arret_proche">Arrêt le plus proche</string>
 
     <string name="oui">Oui</string>
     <string name="non">Non</string>

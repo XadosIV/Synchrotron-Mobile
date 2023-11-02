@@ -1,22 +1,32 @@
 package com.dubert.synchrotron
 
-import android.util.Log
+import android.content.Intent
+import android.location.Location
+import android.location.LocationManager
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dubert.synchrotron.model.Arret
 import com.dubert.synchrotron.model.Line
 import com.dubert.synchrotron.storage.ArretJSONFileStorage
 
-class LineAdapter (private val linesList : ArrayList<Line>, private val recyclerView: RecyclerView) : RecyclerView.Adapter<LineAdapter.ViewHolder>() {
+
+class LineAdapter(private val linesList: ArrayList<Line>, private val recyclerView: RecyclerView, private val location: Location?) : RecyclerView.Adapter<LineAdapter.ViewHolder>() {
+
+    private lateinit var buttonArret : Button
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_line, parent, false)
+        buttonArret = itemView.findViewById(R.id.arret_button)
         return ViewHolder(itemView)
     }
 
@@ -51,7 +61,7 @@ class LineAdapter (private val linesList : ArrayList<Line>, private val recycler
         val terminusList = getTerminus(arretsList)
 
         holder.lineLogo.setImageResource(Line.charToLineLogo(currentItem.name))
-        holder.terminus1Text.text = terminusList[0].name + " - "
+        holder.terminus1Text.text = terminusList[0].name
         if (terminusList.size == 2) {
             holder.terminus2Text.text = terminusList[1].name
         } else {
@@ -62,9 +72,9 @@ class LineAdapter (private val linesList : ArrayList<Line>, private val recycler
 
         holder.arretsRecyclerView.setHasFixedSize(true)
         holder.arretsRecyclerView.isVisible = false
+        holder.nestedRecyclerView.isVisible = false
         holder.arretsRecyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
-        holder.arretsRecyclerView.adapter = ArretAdapter(arretsNotOpposite) // TODO : REPLACE WITH LIST FROM DATABASE
-
+        holder.arretsRecyclerView.adapter = ArretAdapter(arretsNotOpposite)
 
         // On désactive le défilement du parent quand l'enfant s'apprête à être scroller
         holder.arretsRecyclerView.setOnTouchListener (object:View.OnTouchListener{
@@ -85,13 +95,50 @@ class LineAdapter (private val linesList : ArrayList<Line>, private val recycler
             }
         })
 
-
         holder.itemView.setOnClickListener {
             if (onClickListener != null) {
-                onClickListener!!.onClick(holder.arretsRecyclerView, holder.arrow)
+                onClickListener!!.onClick(holder.arretsRecyclerView, holder.nestedRecyclerView, holder.arrow)
             }
         }
 
+        buttonArret.setOnClickListener { itemView ->
+            if (location != null) {
+                val myIntent = Intent(itemView.context, NextBusActivity::class.java)
+                myIntent.putExtra("codeArret", findArret(itemView, currentItem)) //Optional parameters
+                itemView.context.startActivity(myIntent)
+            } else {
+                Toast.makeText(itemView.context, "Vous n'avez pas activé la localisation", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    fun findArret(view: View, line: Line): String {
+        val arretStorage = ArretJSONFileStorage.getInstance(view.context)
+        val arretsList = HashMap<String, Array<Double>>()
+        for (arret in line.arrets) {
+            arretStorage.findByCode(arret)?.let {
+                arretsList.put(it.code, arrayOf(it.lon.toDouble(), it.lat.toDouble()))
+            }
+        }
+        var arretMin = "Aucun"
+        var minDistance = calculDistance(arretsList.iterator().next().value)
+        for (arret in arretsList) {
+            var dist = calculDistance(arret.value)
+            if (dist != null) {
+                if (dist < minDistance!!) {
+                    minDistance = dist
+                    arretMin = arret.key
+                }
+            }
+        }
+        return arretMin
+    }
+
+    fun calculDistance(value: Array<Double>): Float? {
+        val arretLocation = Location(LocationManager.GPS_PROVIDER)
+        arretLocation.latitude = value[0]
+        arretLocation.longitude = value[1]
+        return location?.let { arretLocation.distanceTo(it) }
     }
 
     companion object {
@@ -101,16 +148,15 @@ class LineAdapter (private val linesList : ArrayList<Line>, private val recycler
         }
     }
     interface OnClickListener {
-        fun onClick(view1 : RecyclerView, image : ImageView)
+        fun onClick(view1 : RecyclerView, nested: NestedScrollView, image : ImageView)
     }
-
-
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val lineLogo : ImageView = itemView.findViewById(R.id.lineLogo)
         val terminus1Text : TextView = itemView.findViewById(R.id.terminus1Text)
         val terminus2Text : TextView = itemView.findViewById(R.id.terminus2Text)
         val arretsRecyclerView : RecyclerView = itemView.findViewById(R.id.arrets_recycler_view)
+        val nestedRecyclerView : NestedScrollView = itemView.findViewById(R.id.nested_recycler_view)
         val arrow : ImageView = itemView.findViewById(R.id.button_list)
     }
 }
