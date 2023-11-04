@@ -49,6 +49,7 @@ class ArretAdapter (private val arretsList : ArrayList<String>, private val frag
             holder.nameArret.text = currentItem.name
             holder.favLogo.setOnClickListener {
                 currentItem.isFavorite = !currentItem.isFavorite
+                arretStorage.update(currentItem.id, currentItem)
                 changeStar(currentItem, holder.favLogo)
                 if (fragment == "favs") {
                     (holder.itemView.context as Activity).recreate();
@@ -60,7 +61,7 @@ class ArretAdapter (private val arretsList : ArrayList<String>, private val frag
             val myIntent = Intent(holder.itemView.context, NextBusActivity::class.java)
             myIntent.putExtra("codeArret", arretsList[position]) //Optional parameters
             holder.itemView.context.startActivity(myIntent)
-        } //TODO: Listener
+        }
     }
 
     fun changeStar(arret : Arret, favLogo : ImageView) {
