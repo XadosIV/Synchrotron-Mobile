@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dubert.synchrotron.ArretAdapter
 import com.dubert.synchrotron.R
 import com.dubert.synchrotron.databinding.FragmentHomeBinding
+import com.dubert.synchrotron.model.Arret
 import com.dubert.synchrotron.model.Line
 import com.dubert.synchrotron.storage.ArretJSONFileStorage
 import java.util.Locale
@@ -20,7 +21,7 @@ class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private lateinit var searchView: SearchView
-    private lateinit var dataList: ArrayList<String>
+    private lateinit var dataList: ArrayList<Arret>
     private lateinit var searchList: ArrayList<String>
 
     private lateinit var recyclerView : RecyclerView
@@ -30,7 +31,7 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private fun getArretData(): ArrayList<String> {
+    private fun getArretData(): ArrayList<Arret> {
         val arretStorage = context?.let { ArretJSONFileStorage.getInstance(it) }
         val listLines = arrayListOf<Line>()
         val letters = arrayOf('A', 'B', 'C', 'D');
@@ -38,13 +39,13 @@ class HomeFragment : Fragment() {
             arretStorage!!.getLine(letter)?.let { listLines.add(it) }
         }
 
-        val list = arrayListOf<String>()
+        val list = arrayListOf<Arret>()
         for (line in listLines) {
             for (arret in line.arrets) {
                 if (arretStorage != null) {
                     arretStorage.findByCode(arret)?.let {
-                        if (it.name !in list && !(it.isOpposite)) {
-                            list.add(arret)
+                        if (it !in list && !(it.isOpposite)) {
+                            list.add(it)
                         }
                     }
                 }
@@ -81,8 +82,8 @@ class HomeFragment : Fragment() {
                 val searchText = newText!!.lowercase(Locale.getDefault())
                 if (searchText.isNotEmpty()) {
                     dataList.forEach{
-                        if (it.lowercase(Locale.getDefault()).startsWith(searchText)) {
-                            searchList.add(it)
+                        if (it.name.lowercase(Locale.getDefault()).startsWith(searchText)) {
+                            searchList.add(it.code)
                         }
                     }
                     recyclerView.adapter!!.notifyDataSetChanged()

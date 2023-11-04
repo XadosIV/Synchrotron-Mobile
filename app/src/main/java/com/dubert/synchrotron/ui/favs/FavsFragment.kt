@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -65,6 +67,13 @@ class FavsFragment : Fragment() {
 
         recyclerView.adapter = ArretAdapter(getFavData(), "favs")
         recyclerView.adapter!!.notifyDataSetChanged()
+
+        val noFavori = root.findViewById<TextView>(R.id.noFavs)
+        if (getFavData().size != 0) {
+            noFavori.isVisible = false
+        } else {
+            noFavori.isVisible = true
+        }
 
         return root
     }
