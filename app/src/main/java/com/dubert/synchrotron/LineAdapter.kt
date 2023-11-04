@@ -76,37 +76,10 @@ class LineAdapter(private val linesList: ArrayList<Line>, private val recyclerVi
             // Ca n'a pas de sens, à essayer de fix plus tard, mais pas compris pourquoi
         }
 
-
-        holder.arretsRecyclerView.setHasFixedSize(true)
-        holder.arretsRecyclerView.isVisible = false
-        holder.nestedRecyclerView.isVisible = false
-        holder.arretsRecyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
-
-        holder.arretsRecyclerView.adapter = ArretAdapter(arretsNotOpposite, "line")
-
-        // On désactive le défilement du parent quand l'enfant s'apprête à être scroller
-        holder.arretsRecyclerView.setOnTouchListener (object:View.OnTouchListener{
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean{
-                if (v != null) {
-                    if (v.id == holder.arretsRecyclerView.id){
-                        if (event != null) {
-                            if (event.actionMasked == MotionEvent.ACTION_UP){
-                                recyclerView.requestDisallowInterceptTouchEvent(false)
-                            }else{
-                                recyclerView.requestDisallowInterceptTouchEvent(true)
-                            }
-                        }
-                    }
-                }
-
-                return true
-            }
-        })
-
         holder.itemView.setOnClickListener {
-            if (onClickListener != null) {
-                onClickListener!!.onClick(holder.arretsRecyclerView, holder.nestedRecyclerView, holder.arrow)
-            }
+            val myIntent = Intent(holder.itemView.context, ArretsActivity::class.java)
+            myIntent.putExtra("arretsList", arretsNotOpposite) //Optional parameters
+            holder.itemView.context.startActivity(myIntent)
         }
 
         buttonArret.setOnClickListener { itemView ->
@@ -151,22 +124,10 @@ class LineAdapter(private val linesList: ArrayList<Line>, private val recyclerVi
         return sqrt( pow((lon!! - value[0]),2.0) + pow((lat!! - value[1]),2.0) )
     }
 
-    companion object {
-        private var onClickListener: OnClickListener? = null
-        fun setOnClickListener(onClickListener: OnClickListener) {
-            this.onClickListener = onClickListener
-        }
-    }
-    interface OnClickListener {
-        fun onClick(view1 : RecyclerView, nested: NestedScrollView, image : ImageView)
-    }
-
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val lineLogo : ImageView = itemView.findViewById(R.id.lineLogo)
         val terminus1Text : TextView = itemView.findViewById(R.id.terminus1Text)
         val terminus2Text : TextView = itemView.findViewById(R.id.terminus2Text)
-        val arretsRecyclerView : RecyclerView = itemView.findViewById(R.id.arrets_recycler_view)
-        val nestedRecyclerView : NestedScrollView = itemView.findViewById(R.id.nested_recycler_view)
         val arrow : ImageView = itemView.findViewById(R.id.button_list)
     }
 }

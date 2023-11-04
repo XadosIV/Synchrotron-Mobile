@@ -75,18 +75,6 @@ class LinesFragment : Fragment() {
                         recyclerView.layoutManager = LinearLayoutManager(context)
 
                         recyclerView.adapter = LineAdapter(getLinesData(), recyclerView, loc)
-                        LineAdapter.setOnClickListener(object :
-                            LineAdapter.OnClickListener {
-                            override fun onClick(view1: RecyclerView, nested: NestedScrollView, image: ImageView) {
-                                view1.isVisible = !nested.isVisible
-                                nested.isVisible = !nested.isVisible
-                                if (view1.isVisible) {
-                                    image.setImageResource(R.drawable.ic_arrow_up)
-                                } else {
-                                    image.setImageResource(R.drawable.ic_arrow_down)
-                                }
-                            }
-                        })
                     }
                 }
         } else {
@@ -94,18 +82,6 @@ class LinesFragment : Fragment() {
             recyclerView.layoutManager = LinearLayoutManager(context)
 
             recyclerView.adapter = LineAdapter(getLinesData(), recyclerView, null)
-            LineAdapter.setOnClickListener(object :
-                LineAdapter.OnClickListener {
-                override fun onClick(view1: RecyclerView, nested: NestedScrollView, image: ImageView) {
-                    view1.isVisible = !nested.isVisible
-                    nested.isVisible = !nested.isVisible
-                    if (view1.isVisible) {
-                        image.setImageResource(R.drawable.ic_arrow_up)
-                    } else {
-                        image.setImageResource(R.drawable.ic_arrow_down)
-                    }
-                }
-            })
         }
         return root
     }
