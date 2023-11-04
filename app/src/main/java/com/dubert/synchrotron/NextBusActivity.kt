@@ -1,6 +1,7 @@
 package com.dubert.synchrotron
 
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -44,5 +45,10 @@ class NextBusActivity : AppCompatActivity(R.layout.activity_arret) {
         myAdapter = codeArret?.let { NextBusAdapter(it) }!!
         recyclerview.setAdapter(myAdapter);
         recyclerview.setLayoutManager(LinearLayoutManager(this));
+
+        val retour = findViewById<ImageView>(R.id.retour)
+        retour.setOnClickListener {
+            finish()
+        }
     }
 }

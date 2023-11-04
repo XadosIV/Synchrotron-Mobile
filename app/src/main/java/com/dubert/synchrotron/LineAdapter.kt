@@ -79,6 +79,7 @@ class LineAdapter(private val linesList: ArrayList<Line>, private val recyclerVi
         holder.itemView.setOnClickListener {
             val myIntent = Intent(holder.itemView.context, ArretsActivity::class.java)
             myIntent.putExtra("arretsList", arretsNotOpposite) //Optional parameters
+            myIntent.putExtra("lineLogo", currentItem.logo) //Optional parameters
             holder.itemView.context.startActivity(myIntent)
         }
 
@@ -128,6 +129,5 @@ class LineAdapter(private val linesList: ArrayList<Line>, private val recyclerVi
         val lineLogo : ImageView = itemView.findViewById(R.id.lineLogo)
         val terminus1Text : TextView = itemView.findViewById(R.id.terminus1Text)
         val terminus2Text : TextView = itemView.findViewById(R.id.terminus2Text)
-        val arrow : ImageView = itemView.findViewById(R.id.button_list)
     }
 }

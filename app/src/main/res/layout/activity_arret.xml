@@ -5,35 +5,49 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/arret_name"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:gravity="center"
-        android:textSize="40dp"
-        android:background="@color/primaryColor"
-        android:textColor="@color/white"
-        android:text="GARE"
-        tools:ignore="MissingConstraints" />
-
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/arret_name"
-        android:orientation="vertical">
+        android:layout_height="100dp"
+        android:background="@color/primaryColor"
+        tools:ignore="MissingConstraints">
 
-        <Space
-            android:id="@+id/space"
-            android:layout_width="20dp"
-            android:layout_height="15dp"
+        <TextView
+            android:id="@+id/arret_name"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:gravity="center"
+            android:textSize="40dp"
+            android:background="@color/primaryColor"
+            android:textColor="@color/white"
+            android:text="GARE"
             tools:ignore="MissingConstraints" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/next_bus_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/retour"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="top|start"
+        android:layout_margin="5dp"
+        android:src="@drawable/ic_arrow_return"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Space
+        android:id="@+id/space"
+        android:layout_width="20dp"
+        android:layout_height="15dp"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        tools:ignore="MissingConstraints" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/next_bus_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        app:layout_constraintTop_toBottomOf="@+id/space" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
