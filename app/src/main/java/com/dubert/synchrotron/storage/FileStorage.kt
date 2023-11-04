@@ -13,6 +13,10 @@ abstract class FileStorage<T>(private val context: Context, name: String, extens
     private var data = HashMap<Int, T>()
     private var nextId = 1
 
+    init {
+        read()
+    }
+
     protected  abstract fun create(id:Int, obj: T): T
     protected abstract fun dataToString(data: HashMap<Int, T>): String
     protected abstract fun stringToData(value: String): HashMap<Int, T>

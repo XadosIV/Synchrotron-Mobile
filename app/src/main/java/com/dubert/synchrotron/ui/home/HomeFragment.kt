@@ -43,7 +43,7 @@ class HomeFragment : Fragment() {
             for (arret in line.arrets) {
                 if (arretStorage != null) {
                     arretStorage.findByCode(arret)?.let {
-                        if (arret !in list && !(it.isOpposite)) {
+                        if (it.name !in list && !(it.isOpposite)) {
                             list.add(arret)
                         }
                     }
