@@ -24,6 +24,7 @@ class HomeFragment : Fragment() {
     private lateinit var searchList: ArrayList<String>
 
     private lateinit var recyclerView : RecyclerView
+    private val fragment = this
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -63,9 +64,9 @@ class HomeFragment : Fragment() {
         recyclerView = root.findViewById(R.id.arrets_recycler_view)
         searchView = root.findViewById(R.id.search_home)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = ArretAdapter(arrayListOf())
+        recyclerView.adapter = ArretAdapter(arrayListOf(), "home")
 
-        dataList = getArretData() // TODO : REPLACE WITH LIST FROM DATABASE
+        dataList = getArretData()
         searchList = arrayListOf()
 
         searchView.clearFocus()
@@ -89,7 +90,7 @@ class HomeFragment : Fragment() {
                     searchList.clear()
                     recyclerView.adapter!!.notifyDataSetChanged()
                 }
-                recyclerView.adapter = ArretAdapter(searchList)
+                recyclerView.adapter = ArretAdapter(searchList, "home")
                 return false
             }
         })

@@ -1,5 +1,7 @@
 package com.dubert.synchrotron.ui.favs
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dubert.synchrotron.ArretAdapter
+import com.dubert.synchrotron.NextBusActivity
 import com.dubert.synchrotron.R
 import com.dubert.synchrotron.databinding.FragmentHomeBinding
 import com.dubert.synchrotron.model.Line
@@ -60,10 +63,12 @@ class FavsFragment : Fragment() {
         recyclerView = root.findViewById(R.id.fav_recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        recyclerView.adapter = ArretAdapter(getFavData())
+        recyclerView.adapter = ArretAdapter(getFavData(), "favs")
+        recyclerView.adapter!!.notifyDataSetChanged()
 
         return root
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

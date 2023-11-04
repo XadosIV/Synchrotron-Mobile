@@ -14,6 +14,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dubert.synchrotron.model.Arret
@@ -80,7 +81,8 @@ class LineAdapter(private val linesList: ArrayList<Line>, private val recyclerVi
         holder.arretsRecyclerView.isVisible = false
         holder.nestedRecyclerView.isVisible = false
         holder.arretsRecyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
-        holder.arretsRecyclerView.adapter = ArretAdapter(arretsNotOpposite)
+
+        holder.arretsRecyclerView.adapter = ArretAdapter(arretsNotOpposite, "line")
 
         // On désactive le défilement du parent quand l'enfant s'apprête à être scroller
         holder.arretsRecyclerView.setOnTouchListener (object:View.OnTouchListener{

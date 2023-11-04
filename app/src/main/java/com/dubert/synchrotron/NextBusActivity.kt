@@ -8,7 +8,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dubert.synchrotron.storage.ArretJSONFileStorage
 
+
 class NextBusActivity : AppCompatActivity(R.layout.activity_arret) {
+
+    private lateinit var myAdapter : NextBusAdapter
 
     fun getBusList(code: String): Int { //TODO: Change return + découper le HTML
         return 0
@@ -38,8 +41,8 @@ class NextBusActivity : AppCompatActivity(R.layout.activity_arret) {
             }
         })
 
-        // this creates a vertical layout Manager
-        recyclerview.layoutManager = LinearLayoutManager(this)
-        recyclerview.adapter = codeArret?.let { NextBusAdapter(it) }
+        myAdapter = codeArret?.let { NextBusAdapter(it) }!!
+        recyclerview.setAdapter(myAdapter);
+        recyclerview.setLayoutManager(LinearLayoutManager(this));
     }
 }
