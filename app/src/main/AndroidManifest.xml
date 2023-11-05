@@ -36,6 +36,7 @@
         </activity>
         <activity android:name=".NextBusActivity"/>
         <activity android:name=".ArretsActivity"/>
+        <activity android:name=".ApplicationActivity"/>
 
     </application>
 

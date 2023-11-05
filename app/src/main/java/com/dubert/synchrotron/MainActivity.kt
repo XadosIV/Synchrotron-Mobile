@@ -1,7 +1,11 @@
 package com.dubert.synchrotron
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.animation.AnimationUtils
+import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -21,33 +25,24 @@ import com.dubert.synchrotron.model.Line
 import com.dubert.synchrotron.storage.ArretJSONFileStorage
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(R.layout.activity_charge) {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityMenuBinding
+    private var charging = true;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         UpdateDatabase()
+        val img_rotate = findViewById<ImageView>(R.id.loading_circle);
+        val rotation = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        rotation.setFillAfter(true);
+        img_rotate.startAnimation(rotation);
 
-        binding = ActivityMenuBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        setSupportActionBar(binding.appBarMenu.toolbar)
-
-        val drawerLayout: DrawerLayout = binding.drawerLayout
-        val navView: NavigationView = binding.navView
-        val navController = findNavController(R.id.nav_host_fragment_content_menu)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.nav_home, R.id.nav_favs, R.id.nav_lines, R.id.nav_ticket
-            ), drawerLayout
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+        if (!charging) {
+            val myIntent = Intent(this, ApplicationActivity::class.java)
+            startActivity(myIntent)
+        }
     }
 
     private fun UpdateDatabase() {
