@@ -32,7 +32,7 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private fun getArretData(): ArrayList<Arret> {
-        val arretStorage = context?.let { ArretJSONFileStorage.getInstance(it) }
+        val arretStorage = ArretJSONFileStorage.getInstance()
         val listLines = arrayListOf<Line>()
         val letters = arrayOf('A', 'B', 'C', 'D');
         for (letter in letters) {
@@ -41,10 +41,10 @@ class HomeFragment : Fragment() {
 
         val list = arrayListOf<Arret>()
         for (line in listLines) {
-            for (arret in line.arrets) {
+            for (arret in line.forward) {
                 if (arretStorage != null) {
                     arretStorage.findByCode(arret)?.let {
-                        if (it !in list && !(it.isOpposite)) {
+                        if (it !in list) {
                             list.add(it)
                         }
                     }
@@ -53,7 +53,6 @@ class HomeFragment : Fragment() {
         }
         return list
     }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

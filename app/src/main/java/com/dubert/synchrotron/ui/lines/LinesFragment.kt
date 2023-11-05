@@ -36,7 +36,7 @@ class LinesFragment : Fragment() {
 
 
     private fun getLinesData(): ArrayList<Line> {
-        val arretStorage = context?.let { ArretJSONFileStorage.getInstance(it) }
+        val arretStorage = ArretJSONFileStorage.getInstance()
         val lines = arretStorage!!.getLines()
         val list = arrayListOf<Line>()
         val letters = arrayOf('A', 'B', 'C', 'D');

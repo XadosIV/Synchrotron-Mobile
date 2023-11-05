@@ -12,16 +12,18 @@ class ArretJSONFileStorage (context: Context): JSONFileStorage<Arret>(context, "
 
         private var lines: HashMap<Char, Line>? = null
 
-        fun getInstance(context: Context): ArretJSONFileStorage {
-            if (instance == null){
-                instance = ArretJSONFileStorage(context)
-            }
+        fun getInstance(): ArretJSONFileStorage {
+            return instance!!
+        }
+
+        fun init(context: Context): ArretJSONFileStorage {
+            instance = ArretJSONFileStorage(context)
             return instance!!
         }
     }
 
     override fun create(id: Int, obj:Arret): Arret {
-        return Arret(id, obj.code, obj.name, obj.lat, obj.lon, obj.isArrival, obj.isTerminus, obj.isFavorite, obj.isOpposite, obj.opposite)
+        return Arret(id, obj.code, obj.name, obj.lat, obj.lon, obj.isArrival, obj.isTerminus, obj.isFavorite, obj.opposite)
     }
 
     override fun objectToJson(id: Int, obj: Arret): JSONObject {
@@ -34,7 +36,6 @@ class ArretJSONFileStorage (context: Context): JSONFileStorage<Arret>(context, "
         json.put(Arret.FAVORITE, obj.isFavorite)
         json.put(Arret.LAT, obj.lat)
         json.put(Arret.LON, obj.lon)
-        json.put(Arret.ISOPPOSITE, obj.isOpposite)
         json.put(Arret.OPPOSITE, obj.opposite)
         return json
     }
@@ -49,7 +50,6 @@ class ArretJSONFileStorage (context: Context): JSONFileStorage<Arret>(context, "
             json.getBoolean(Arret.ARRIVAL),
             json.getBoolean(Arret.TERMINUS),
             json.getBoolean(Arret.FAVORITE),
-            json.getBoolean(Arret.ISOPPOSITE),
             json.getString(Arret.OPPOSITE)
         )
     }

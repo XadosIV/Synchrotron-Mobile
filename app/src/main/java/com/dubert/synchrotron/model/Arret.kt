@@ -9,7 +9,6 @@ class Arret(
     var isArrival : Boolean,
     var isTerminus : Boolean,
     var isFavorite : Boolean,
-    var isOpposite : Boolean,
     var opposite : String
 ) {
 
@@ -22,7 +21,6 @@ class Arret(
         const val ARRIVAL = "isArrival"
         const val FAVORITE = "isFavorite"
         const val TERMINUS = "isTerminus"
-        const val ISOPPOSITE = "isOpposite"
         const val OPPOSITE = "opposite"
     }
 

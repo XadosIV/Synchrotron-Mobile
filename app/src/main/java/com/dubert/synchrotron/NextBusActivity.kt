@@ -22,7 +22,7 @@ class NextBusActivity : AppCompatActivity(R.layout.activity_arret) {
         super.onCreate(savedInstanceState)
         val b = intent.extras
         val codeArret = b!!.getString("codeArret")
-        val arretStorage = ArretJSONFileStorage.getInstance(this)
+        val arretStorage = ArretJSONFileStorage.getInstance()
         val arret = codeArret?.let { arretStorage.findByCode(it) }
 
         val recyclerview = findViewById<RecyclerView>(R.id.next_bus_recycler_view)

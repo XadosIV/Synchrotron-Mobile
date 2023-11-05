@@ -52,6 +52,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun UpdateDatabase() {
 
+        // Create Storage Instance
+        ArretJSONFileStorage.init(this)
+
         // Instantiate the RequestQueue.
         val queue = Volley.newRequestQueue(this)
         val letters = arrayOf('A', 'B', 'C', 'D');
@@ -61,21 +64,35 @@ class MainActivity : AppCompatActivity() {
             val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url+letter, null,
                 Response.Listener { response ->
                     val tab = response.getJSONArray(letter.toString())
-                    val arretStorage = ArretJSONFileStorage.getInstance(this)
-                    val arretList = ArrayList<String>()
+                    val arretStorage = ArretJSONFileStorage.getInstance()
+                    val forwardList = ArrayList<String>()
+                    val backwardList = ArrayList<String>()
 
                     for (i in 0 until tab.length()){
                         val lineJson = tab.getJSONObject(i)
-                        val isOpposite = if (lineJson.getString("direction") == "RETURN") true else false
+                        val isOpposite = lineJson.getString("direction") == "RETURN"
                         val arretsJson = lineJson.getJSONArray("stopPoints")
 
                         for (j in 0 until arretsJson.length()){
                             val arret = arretsJson.getJSONObject(j)
                             val code = arret.getString("id")
-                            arretList.add(code)
+                            if (isOpposite){
+                                backwardList.add(code)
+                            }else{
+                                forwardList.add(code)
+                            }
 
                             if (arretStorage.findByCode(code) == null){
                                 var oppositeCode = ""
+
+                                // ============= CAS SPECIFIQUES =============
+                                if (code == "PRSON" && !arret.has("isTerminus")) continue
+                                /*
+                                Désolé pour ça, il se trouve que PRSON apparait deux fois dans nos données
+                                (C'est le seul arrêt à ne pas faire de distinction avec des chiffres (PRSON1 & PRSON2 n'existent pas)
+                                Ainsi, on garde uniquement l'arrêt PRSON ayant des données COMPLETES (l'autre n'ayant pas de valeur pour isTerminus)
+                                 */
+
                                 if (arret.has("oppositeStopPoint")){
                                     oppositeCode = arret.getJSONObject("oppositeStopPoint").getString("id")
                                 }else if (code == "HYERE2"){
@@ -84,11 +101,18 @@ class MainActivity : AppCompatActivity() {
                                     oppositeCode = "HYERE2"
                                 }
                                 /*
-                                * Désolé pour l'atrocité au-dessus, ce cas spécifique se produit car Synchrobus a oublié d'ajouter la donnée.
+                                * Encore désolé, mais ce cas spécifique se produit car Synchrobus a oublié d'ajouter la donnée.
                                 * L'erreur est également présente dans leur application, l'arrêt Hyeres (ligne C) est le seul arrêt
                                 * à ne pas pouvoir changer de sens, alors que l'autre sens existe, ainsi, l'arrêt de code HYERE1 n'est pas
                                 * accessible depuis l'onglet ligne.
                                 * */
+                                // ===========================================================================
+
+                                if (isOpposite){
+                                    Log.i("AJOUT-OPPOSITE", code)
+                                }else{
+                                    Log.i("AJOUT", code)
+                                }
 
                                 arretStorage.insert(
                                     Arret(-1,
@@ -99,14 +123,13 @@ class MainActivity : AppCompatActivity() {
                                         arret.has("isArrival"),
                                         arret.has("isTerminus"),
                                         false,
-                                        isOpposite,
                                         oppositeCode
                                     ))
                             }
                         }
                     }
 
-                    arretStorage.getLines()[letter] = Line(letter, arretList, Line.charToLineLogo(letter))
+                    arretStorage.getLines()[letter] = Line(letter, forwardList, backwardList)
 
 
                 },

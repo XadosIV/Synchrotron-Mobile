@@ -38,55 +38,33 @@ class LineAdapter(private val linesList: ArrayList<Line>, private val recyclerVi
         return linesList.size
     }
 
-    fun getTerminus(arrets: ArrayList<Arret>): ArrayList<Arret> {
-        val list = arrayListOf<Arret>()
-        for (arret in arrets){
-            Log.i("GETTERMINUS", arret.name + " " + arret.isTerminus)
-            if (arret.isTerminus && arret !in list){
-                list.add(arret)
-            }
-        }
-        return list
-    }
+
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val currentItem = linesList[position]
+        val currentLine = linesList[position]
 
-        val arretStorage = ArretJSONFileStorage.getInstance(holder.itemView.context)
-        val arretsList = arrayListOf<Arret>()
-        val arretsNotOpposite = arrayListOf<String>()
-        for (arret in currentItem.arrets) {
-            arretStorage.findByCode(arret)?.let {
-                arretsList.add(it)
-                if (!it.isOpposite && arret !in arretsNotOpposite) { //Pour avoir qu'une seule fois les arrets et pas en double dans l'affichage
-                    arretsNotOpposite.add(arret)
-                }
-            }
-        }
-        val terminusList = getTerminus(arretsList)
+        val storage = ArretJSONFileStorage.getInstance()
 
-        holder.lineLogo.setImageResource(Line.charToLineLogo(currentItem.name))
+        val terminusList = currentLine.getTerminus()
+
+        Log.i("TERMINUS"+position+"FINAL", terminusList[0].name)
+        Log.i("TERMINUS"+position+"FINAL", terminusList[1].name)
+
+        holder.lineLogo.setImageResource(Line.charToLineLogo(currentLine.name))
         holder.terminus1Text.text = terminusList[0].name
-
-        if (terminusList.size == 2) {
-            holder.terminus2Text.text = terminusList[1].name
-        } else {
-            holder.terminus2Text.text = "PR Maison Brûlée" //TODO : Essayer de fix
-            // Encore une fois, le seul terminus non récupéré est celui-ci ??
-            // Ca n'a pas de sens, à essayer de fix plus tard, mais pas compris pourquoi
-        }
+        holder.terminus2Text.text = terminusList[1].name
 
         holder.itemView.setOnClickListener {
             val myIntent = Intent(holder.itemView.context, ArretsActivity::class.java)
-            myIntent.putExtra("arretsList", arretsNotOpposite) //Optional parameters
-            myIntent.putExtra("lineLogo", currentItem.logo) //Optional parameters
+            myIntent.putExtra("arretsList", currentLine.forward) //Optional parameters
+            myIntent.putExtra("lineLogo", Line.charToLineLogo(currentLine.name)) //Optional parameters
             holder.itemView.context.startActivity(myIntent)
         }
 
         buttonArret.setOnClickListener { itemView ->
             if (location != null) {
                 val myIntent = Intent(itemView.context, NextBusActivity::class.java)
-                myIntent.putExtra("codeArret", findArret(itemView, currentItem)) //Optional parameters
+                myIntent.putExtra("codeArret", findArret(itemView, currentLine)) //Optional parameters
                 itemView.context.startActivity(myIntent)
             } else {
                 Toast.makeText(itemView.context, "Vous n'avez pas activé la localisation", Toast.LENGTH_LONG).show();
@@ -95,9 +73,9 @@ class LineAdapter(private val linesList: ArrayList<Line>, private val recyclerVi
     }
 
     fun findArret(view: View, line: Line): String {
-        val arretStorage = ArretJSONFileStorage.getInstance(view.context)
+        val arretStorage = ArretJSONFileStorage.getInstance()
         val arretsList = HashMap<String, Array<Double>>()
-        for (arret in line.arrets) {
+        for (arret in line.forward) {
             arretStorage.findByCode(arret)?.let {
                 arretsList.put(it.code, arrayOf(it.lon.toDouble(), it.lat.toDouble()))
             }
@@ -107,7 +85,6 @@ class LineAdapter(private val linesList: ArrayList<Line>, private val recyclerVi
 
         for (arret in arretsList) {
             var dist = calculDistance(arret.value)
-            Log.i("NOM", arret.key + " " + dist)
             if (dist != null) {
                 if (dist < minDistance!!) {
                     minDistance = dist

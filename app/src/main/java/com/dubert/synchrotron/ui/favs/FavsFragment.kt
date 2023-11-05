@@ -30,7 +30,7 @@ class FavsFragment : Fragment() {
     private lateinit var recyclerView : RecyclerView
 
     private fun getFavData(): ArrayList<String> {
-        val arretStorage = context?.let { ArretJSONFileStorage.getInstance(it) }
+        val arretStorage = ArretJSONFileStorage.getInstance()
         val lines = arretStorage!!.getLines()
         val listLines = arrayListOf<Line>()
         val letters = arrayOf('A', 'B', 'C', 'D');
@@ -40,10 +40,10 @@ class FavsFragment : Fragment() {
 
         val listFavorites = arrayListOf<String>()
         for (line in listLines) {
-            for (arretCode in line.arrets) {
+            for (arretCode in line.forward + line.backward) {
                 val arret = arretStorage.findByCode(arretCode)
                 if (arret != null) {
-                    if (arretCode !in listFavorites && !arret.isOpposite) {
+                    if (arretCode !in listFavorites) {
                         if (arret.isFavorite) {
                             listFavorites.add(arretCode)
                         }
@@ -69,11 +69,7 @@ class FavsFragment : Fragment() {
         recyclerView.adapter!!.notifyDataSetChanged()
 
         val noFavori = root.findViewById<TextView>(R.id.noFavs)
-        if (getFavData().size != 0) {
-            noFavori.isVisible = false
-        } else {
-            noFavori.isVisible = true
-        }
+        noFavori.isVisible = getFavData().size == 0
 
         return root
     }

@@ -27,7 +27,7 @@ class NextBusAdapter (private val arret : String) : RecyclerView.Adapter<NextBus
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val arretStorage = ArretJSONFileStorage.getInstance(holder.itemView.context)
+        val arretStorage = ArretJSONFileStorage.getInstance()
         val arret1 = arretStorage.findByCode(arret)
 
         if (arret1 != null) {
