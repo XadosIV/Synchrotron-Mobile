@@ -31,13 +31,13 @@
                     android:orientation="horizontal">
 
                         <Space
-                            android:layout_width="20dp"
+                            android:layout_width="10dp"
                             android:layout_height="20dp" />
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/arrets_recycler_view"
                             android:layout_width="0dp"
-                            android:layout_height="300dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:scrollbars="vertical"
                             app:layout_constraintBottom_toBottomOf="parent"

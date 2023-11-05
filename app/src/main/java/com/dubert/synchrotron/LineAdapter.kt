@@ -43,8 +43,6 @@ class LineAdapter(private val linesList: ArrayList<Line>, private val recyclerVi
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentLine = linesList[position]
 
-        val storage = ArretJSONFileStorage.getInstance()
-
         val terminusList = currentLine.getTerminus()
 
         Log.i("TERMINUS"+position+"FINAL", terminusList[0].name)
@@ -57,6 +55,7 @@ class LineAdapter(private val linesList: ArrayList<Line>, private val recyclerVi
         holder.itemView.setOnClickListener {
             val myIntent = Intent(holder.itemView.context, ArretsActivity::class.java)
             myIntent.putExtra("arretsList", currentLine.forward) //Optional parameters
+            myIntent.putExtra("arretsListOpposite", currentLine.backward) //Optional parameters
             myIntent.putExtra("lineLogo", Line.charToLineLogo(currentLine.name)) //Optional parameters
             holder.itemView.context.startActivity(myIntent)
         }
