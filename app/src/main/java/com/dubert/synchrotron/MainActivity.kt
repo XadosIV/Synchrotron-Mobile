@@ -2,6 +2,7 @@ package com.dubert.synchrotron
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings.Global
 import android.util.Log
 import android.view.animation.AnimationUtils
 import android.widget.Button
@@ -23,29 +24,39 @@ import com.dubert.synchrotron.databinding.ActivityMenuBinding
 import com.dubert.synchrotron.model.Arret
 import com.dubert.synchrotron.model.Line
 import com.dubert.synchrotron.storage.ArretJSONFileStorage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class MainActivity : AppCompatActivity(R.layout.activity_charge) {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private var charging = true;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        UpdateDatabase()
-        val img_rotate = findViewById<ImageView>(R.id.loading_circle);
-        val rotation = AnimationUtils.loadAnimation(this, R.anim.rotate);
-        rotation.setFillAfter(true);
-        img_rotate.startAnimation(rotation);
-
-        if (!charging) {
-            val myIntent = Intent(this, ApplicationActivity::class.java)
-            startActivity(myIntent)
+        val imgRotate = findViewById<ImageView>(R.id.loading_circle)
+        val rotation = AnimationUtils.loadAnimation(this, R.anim.rotate)
+        val myIntent = Intent(this, ApplicationActivity::class.java)
+        rotation.fillAfter = true
+        imgRotate.startAnimation(rotation)
+        GlobalScope.launch{
+            suspend {
+                updateDatabase()
+                withContext(Dispatchers.Main){
+                    Log.i("STARTED", "JAI STARTED")
+                    startActivity(myIntent)
+                }
+            }.invoke()
         }
+
     }
 
-    private fun UpdateDatabase() {
+    private suspend fun updateDatabase() {
+        Log.i("STARTED", "JAI RECU LE CALL")
 
         // Create Storage Instance
         ArretJSONFileStorage.init(this)
@@ -54,7 +65,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_charge) {
         val queue = Volley.newRequestQueue(this)
         val letters = arrayOf('A', 'B', 'C', 'D');
         val url = "https://start.synchro.grandchambery.fr/fr/map/linesshape?line="
-
+        var responseLength = 0
         for (letter in letters){
             val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url+letter, null,
                 Response.Listener { response ->
@@ -103,12 +114,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_charge) {
                                 * */
                                 // ===========================================================================
 
-                                if (isOpposite){
-                                    Log.i("AJOUT-OPPOSITE", code)
-                                }else{
-                                    Log.i("AJOUT", code)
-                                }
-
                                 arretStorage.insert(
                                     Arret(-1,
                                         code,
@@ -125,15 +130,22 @@ class MainActivity : AppCompatActivity(R.layout.activity_charge) {
                     }
 
                     arretStorage.getLines()[letter] = Line(letter, forwardList, backwardList)
-
+                    responseLength++
 
                 },
                 Response.ErrorListener { error ->
                     Toast.makeText(this, "Website didn't respond", Toast.LENGTH_LONG).show();
+                    Log.i("LINE_RESPONSE", "FAILED")
+                    responseLength++
                 }
             )
+
             // Add the request to the RequestQueue.
             queue.add(jsonObjectRequest)
+        }
+        while (responseLength < 4){
+            Log.i("STARTED", ""+responseLength)
+            delay(50)
         }
     }
 

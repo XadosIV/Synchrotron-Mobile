@@ -1,5 +1,6 @@
 package com.dubert.synchrotron.storage
 
+import android.annotation.SuppressLint
 import android.content.Context
 import com.dubert.synchrotron.model.Arret
 import com.dubert.synchrotron.model.Line
