@@ -1,12 +1,16 @@
 package com.dubert.synchrotron
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.Request
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.dubert.synchrotron.storage.ArretJSONFileStorage
 
 
@@ -14,37 +18,34 @@ class NextBusActivity : AppCompatActivity(R.layout.activity_arret) {
 
     private lateinit var myAdapter : NextBusAdapter
 
-    fun getBusList(code: String): Int { //TODO: Change return + découper le HTML
-        return 0
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val b = intent.extras
-        val codeArret = b!!.getString("codeArret")
-        val arretStorage = ArretJSONFileStorage.getInstance()
-        val arret = codeArret?.let { arretStorage.findByCode(it) }
-
+        val code = b!!.getString("codeArret")!!
+        val storage = ArretJSONFileStorage.getInstance()
+        var lineName : Char? = null
+        if (b.containsKey("line")){
+            lineName = b.getChar("line")
+        }
         val recyclerview = findViewById<RecyclerView>(R.id.next_bus_recycler_view)
 
+        val arret = storage.findByCode(code)!!
         val arretName = findViewById<TextView>(R.id.arret_name)
-        if (arret != null) {
-            arretName.text = arret.name
-        }
+        arretName.text = arret.name
 
-        ContentScrapper.getHTMLData(this,"https://live.synchro-bus.fr/" + codeArret ,object : ContentScrapper.ScrapListener{
-            override fun onResponse(html: String?) {
-                if(html != null) {
-                    val listBus = getBusList(html)
-                } else {
-                    Toast.makeText(this@NextBusActivity,"Not found",Toast.LENGTH_LONG).show()
-                }
-            }
+        val queue = Volley.newRequestQueue(this)
+
+        val req = StringRequest(Request.Method.GET, "https://live.synchro-bus.fr/"+code, {
+            val items = arret.urlToNextBus(it, lineName)
+
+            myAdapter = NextBusAdapter(items)
+            recyclerview.adapter = myAdapter;
+            recyclerview.layoutManager = LinearLayoutManager(this);
+
+        }, {
         })
-
-        myAdapter = codeArret?.let { NextBusAdapter(it) }!!
-        recyclerview.setAdapter(myAdapter);
-        recyclerview.setLayoutManager(LinearLayoutManager(this));
+        queue.add(req)
 
         val retour = findViewById<ImageView>(R.id.retour)
         retour.setOnClickListener {

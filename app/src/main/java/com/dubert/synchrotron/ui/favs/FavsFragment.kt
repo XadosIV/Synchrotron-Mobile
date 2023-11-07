@@ -17,6 +17,7 @@ import com.dubert.synchrotron.R
 import com.dubert.synchrotron.databinding.FragmentHomeBinding
 import com.dubert.synchrotron.model.Line
 import com.dubert.synchrotron.storage.ArretJSONFileStorage
+import com.dubert.synchrotron.storage.JSONFileStorage
 
 class FavsFragment : Fragment() {
 
@@ -64,8 +65,8 @@ class FavsFragment : Fragment() {
 
         recyclerView = root.findViewById(R.id.fav_recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(context)
-
-        recyclerView.adapter = ArretAdapter(getFavData(), "favs")
+        val storage = ArretJSONFileStorage.getInstance()
+        recyclerView.adapter = ArretAdapter(getFavData(),  storage.getLine('A')!!,"favs")
         recyclerView.adapter!!.notifyDataSetChanged()
 
         val noFavori = root.findViewById<TextView>(R.id.noFavs)

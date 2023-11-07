@@ -64,7 +64,8 @@ class HomeFragment : Fragment() {
         recyclerView = root.findViewById(R.id.arrets_recycler_view)
         searchView = root.findViewById(R.id.search_home)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = ArretAdapter(arrayListOf(), "home")
+        val storage = ArretJSONFileStorage.getInstance()
+        recyclerView.adapter = ArretAdapter(arrayListOf(), storage.getLine('A')!!, "home")
 
         dataList = getArretData()
         searchList = arrayListOf()
@@ -90,7 +91,7 @@ class HomeFragment : Fragment() {
                     searchList.clear()
                     recyclerView.adapter!!.notifyDataSetChanged()
                 }
-                recyclerView.adapter = ArretAdapter(searchList, "home")
+                recyclerView.adapter = ArretAdapter(searchList, storage.getLine('A')!!, "home")
                 return false
             }
         })

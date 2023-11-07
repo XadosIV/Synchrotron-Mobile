@@ -1,5 +1,7 @@
 package com.dubert.synchrotron.model
 
+import android.util.Log
+
 class Arret(
     var id : Int,
     var code : String,
@@ -24,7 +26,27 @@ class Arret(
         const val OPPOSITE = "opposite"
     }
 
-    fun getNextBus(): String {
-        return "5" // TODO : REPLACE WITH REAL NUMBER
+    fun urlToNextBus(body:String, line:Char?): ArrayList<NextBus> {
+        val list = ArrayList<NextBus>()
+        var elements = body.split("<div class=\"nq-c-Direction-content\">")
+        if (elements.size == 1) return list
+        elements = elements.drop(1)
+        for (element in elements){
+            var l = element.split("_")[0].last()
+            if (l in arrayOf('A', 'B', 'C', 'D')){
+                if (l == line || line == null){ // Recuperer uniquement les bus de la bonne ligne.
+                    list.add(
+                        NextBus(
+                            element.split("detail-time\">")[1].split("<")[0], //horaire
+                            element.split("<span>")[1].split("</span>")[0], // direction
+                            l, //line
+                            code
+                        ))
+                }
+            }
+
+        }
+        Log.i("SIZEOF", ""+list.size)
+        return list
     }
 }

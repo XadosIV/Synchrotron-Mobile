@@ -14,33 +14,31 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.dubert.synchrotron.model.Line
+import com.dubert.synchrotron.model.NextBus
 import com.dubert.synchrotron.storage.ArretJSONFileStorage
 
-class NextBusAdapter (private val arret : String) : RecyclerView.Adapter<NextBusAdapter.ViewHolder>() {
+class NextBusAdapter (private val nextBusList : ArrayList<NextBus>) : RecyclerView.Adapter<NextBusAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_next_bus, parent, false)
         return ViewHolder(itemView)
     }
 
     override fun getItemCount(): Int {
-        return 1
+        return nextBusList.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val arretStorage = ArretJSONFileStorage.getInstance()
-        val arret1 = arretStorage.findByCode(arret)
+        val bus = nextBusList[position]
 
-        if (arret1 != null) {
-            holder.terminusText.text = arret1.name
-        }
-        /*nextBus = getNextBus(arret, holder.itemView.context)
-        holder.timeText.text = nextBus.time
-        holder.waitText.text = nextBus.wait*/
+        holder.terminusText.text = bus.direction
+        holder.timeText.text = bus.horaire
+        holder.logo.setImageResource(Line.charToLineLogo(bus.line))
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val terminusText : TextView = itemView.findViewById(R.id.terminusText)
         val timeText : TextView = itemView.findViewById(R.id.timeText)
-        val waitText : TextView = itemView.findViewById(R.id.waitText)
+        val logo : ImageView = itemView.findViewById(R.id.lineLogo)
     }
 }

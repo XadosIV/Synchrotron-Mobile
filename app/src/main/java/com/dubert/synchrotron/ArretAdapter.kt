@@ -11,12 +11,17 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.Request
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.dubert.synchrotron.model.Arret
+import com.dubert.synchrotron.model.Line
 import com.dubert.synchrotron.storage.ArretJSONFileStorage
 
 
-class ArretAdapter (private val arretsList : ArrayList<String>, private val fragment: String) : RecyclerView.Adapter<ArretAdapter.ViewHolder>() {
+class ArretAdapter (private val arretsList : ArrayList<String>, private val line : Line, private val fragment: String) : RecyclerView.Adapter<ArretAdapter.ViewHolder>() {
 
+    val cacheHoraire = HashMap<String, String>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_arret, parent, false)
         return ViewHolder(itemView)
@@ -26,33 +31,44 @@ class ArretAdapter (private val arretsList : ArrayList<String>, private val frag
         return arretsList.size
     }
 
-    fun getNextBus(code: String, context: Context): Int {
-        ContentScrapper.getHTMLData(MainActivity(),"https://live.synchro-bus.fr/" + code ,object : ContentScrapper.ScrapListener{
-            override fun onResponse(html: String?) {
-                if(html != null) {
-                    //TODO: RECUPERE LE PROCHAIN BUS
-                } else {
-                    Toast.makeText(context,"Not found",Toast.LENGTH_LONG).show()
-                }
-            }
-        })
-        return 0 //TODO: CHANGE
-    }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val arretStorage = ArretJSONFileStorage.getInstance()
-        val currentItem = arretStorage.findByCode(arretsList[position])
-        holder.lineText.text = "Prochain bus dans : " + getNextBus(arretsList[position], holder.itemView.context) + " minutes"
-        if (currentItem != null) {
-            changeStar(currentItem, holder.favLogo)
-            holder.nameArret.text = currentItem.name
-            holder.favLogo.setOnClickListener {
-                currentItem.isFavorite = !currentItem.isFavorite
-                arretStorage.update(currentItem.id, currentItem)
-                changeStar(currentItem, holder.favLogo)
-                if (fragment == "favs") {
-                    (holder.itemView.context as Activity).recreate();
+        val currentItem = arretStorage.findByCode(arretsList[position])!!
+
+        var text = ""
+        if (position == itemCount-1) {
+            text = "Terminus"
+        }else if (cacheHoraire.containsKey(currentItem.code)){
+            text = cacheHoraire[currentItem.code]!!
+        }else{
+            text = "Récupération des données..."
+            val queue = Volley.newRequestQueue(holder.itemView.context)
+            val req = StringRequest(Request.Method.GET, "https://live.synchro-bus.fr/"+currentItem.code, {
+                val items = currentItem.urlToNextBus(it, line.name)
+
+                if (items.size > 0){
+                    text = "Prochain bus à " + items[0].horaire
+                }else{
+                    text = "Aucun bus prochainement"
                 }
+                cacheHoraire.set(currentItem.code, text)
+                holder.lineText.text = text
+
+            }, {
+            })
+            queue.add(req)
+        }
+        holder.lineText.text = text
+
+
+        changeStar(currentItem, holder.favLogo)
+        holder.nameArret.text = currentItem.name
+        holder.favLogo.setOnClickListener {
+            currentItem.isFavorite = !currentItem.isFavorite
+            arretStorage.update(currentItem.id, currentItem)
+            changeStar(currentItem, holder.favLogo)
+            if (fragment == "favs") {
+                (holder.itemView.context as Activity).recreate();
             }
         }
 
@@ -63,7 +79,7 @@ class ArretAdapter (private val arretsList : ArrayList<String>, private val frag
         }
     }
 
-    fun changeStar(arret : Arret, favLogo : ImageView) {
+    private fun changeStar(arret : Arret, favLogo : ImageView) {
         if (arret.isFavorite) {
             favLogo.setImageResource((R.drawable.ic_star))
         } else {

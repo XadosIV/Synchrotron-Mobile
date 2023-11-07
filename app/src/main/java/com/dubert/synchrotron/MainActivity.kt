@@ -2,25 +2,17 @@ package com.dubert.synchrotron
 
 import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings.Global
 import android.util.Log
 import android.view.animation.AnimationUtils
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
-import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
-import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import com.dubert.synchrotron.databinding.ActivityMenuBinding
 import com.dubert.synchrotron.model.Arret
 import com.dubert.synchrotron.model.Line
 import com.dubert.synchrotron.storage.ArretJSONFileStorage
@@ -28,7 +20,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class MainActivity : AppCompatActivity(R.layout.activity_charge) {
@@ -46,13 +37,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_charge) {
         GlobalScope.launch{
             suspend {
                 updateDatabase()
-                withContext(Dispatchers.Main){
-                    Log.i("STARTED", "JAI STARTED")
-                    startActivity(myIntent)
-                }
+                Log.i("STARTED", "JAI STARTED")
+                startActivity(myIntent)
             }.invoke()
         }
-
     }
 
     private suspend fun updateDatabase() {
@@ -68,7 +56,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_charge) {
         var responseLength = 0
         for (letter in letters){
             val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url+letter, null,
-                Response.Listener { response ->
+                { response ->
                     val tab = response.getJSONArray(letter.toString())
                     val arretStorage = ArretJSONFileStorage.getInstance()
                     val forwardList = ArrayList<String>()
@@ -91,27 +79,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_charge) {
                             if (arretStorage.findByCode(code) == null){
                                 var oppositeCode = ""
 
-                                // ============= CAS SPECIFIQUES =============
+                                // ============= CAS SPECIFIQUE =============
                                 if (code == "PRSON" && !arret.has("isTerminus")) continue
                                 /*
-                                Désolé pour ça, il se trouve que PRSON apparait deux fois dans nos données
+                                Désolé pour ça, il se trouve que PRSON apparait deux fois dans ces données
                                 (C'est le seul arrêt à ne pas faire de distinction avec des chiffres (PRSON1 & PRSON2 n'existent pas)
                                 Ainsi, on garde uniquement l'arrêt PRSON ayant des données COMPLETES (l'autre n'ayant pas de valeur pour isTerminus)
                                  */
-
-                                if (arret.has("oppositeStopPoint")){
-                                    oppositeCode = arret.getJSONObject("oppositeStopPoint").getString("id")
-                                }else if (code == "HYERE2"){
-                                    oppositeCode = "HYERE1"
-                                }else if (code == "HYERE1"){
-                                    oppositeCode = "HYERE2"
-                                }
-                                /*
-                                * Encore désolé, mais ce cas spécifique se produit car Synchrobus a oublié d'ajouter la donnée.
-                                * L'erreur est également présente dans leur application, l'arrêt Hyeres (ligne C) est le seul arrêt
-                                * à ne pas pouvoir changer de sens, alors que l'autre sens existe, ainsi, l'arrêt de code HYERE1 n'est pas
-                                * accessible depuis l'onglet ligne.
-                                * */
                                 // ===========================================================================
 
                                 arretStorage.insert(
@@ -133,7 +107,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_charge) {
                     responseLength++
 
                 },
-                Response.ErrorListener { error ->
+                { error ->
                     Toast.makeText(this, "Website didn't respond", Toast.LENGTH_LONG).show();
                     Log.i("LINE_RESPONSE", "FAILED")
                     responseLength++

@@ -54,9 +54,7 @@ class LineAdapter(private val linesList: ArrayList<Line>, private val recyclerVi
 
         holder.itemView.setOnClickListener {
             val myIntent = Intent(holder.itemView.context, ArretsActivity::class.java)
-            myIntent.putExtra("arretsList", currentLine.forward) //Optional parameters
-            myIntent.putExtra("arretsListOpposite", currentLine.backward) //Optional parameters
-            myIntent.putExtra("lineLogo", Line.charToLineLogo(currentLine.name)) //Optional parameters
+            myIntent.putExtra("line", currentLine.name) //Optional parameters
             holder.itemView.context.startActivity(myIntent)
         }
 
@@ -64,6 +62,7 @@ class LineAdapter(private val linesList: ArrayList<Line>, private val recyclerVi
             if (location != null) {
                 val myIntent = Intent(itemView.context, NextBusActivity::class.java)
                 myIntent.putExtra("codeArret", findArret(itemView, currentLine)) //Optional parameters
+                myIntent.putExtra("line", currentLine.name) //Optional parameters
                 itemView.context.startActivity(myIntent)
             } else {
                 Toast.makeText(itemView.context, "Vous n'avez pas activé la localisation", Toast.LENGTH_LONG).show();
@@ -79,8 +78,8 @@ class LineAdapter(private val linesList: ArrayList<Line>, private val recyclerVi
                 arretsList.put(it.code, arrayOf(it.lon.toDouble(), it.lat.toDouble()))
             }
         }
-        var arretMin = "Aucun"
         var minDistance = calculDistance(arretsList.iterator().next().value)
+        var arretMin = arretsList.iterator().next().key
 
         for (arret in arretsList) {
             var dist = calculDistance(arret.value)

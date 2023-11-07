@@ -35,4 +35,8 @@ class Line(
         }
         return list
     }
+
+    fun logo() : Int{
+        return charToLineLogo(name)
+    }
 }
