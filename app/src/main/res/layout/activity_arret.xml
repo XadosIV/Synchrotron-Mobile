@@ -43,11 +43,71 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
         tools:ignore="MissingConstraints" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/next_bus_recycler_view"
+    <TextView
+        android:id="@+id/noBus"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:gravity="center"
+        android:text="Aucun départ proche"
+        android:textSize="40dp"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout3"
+        tools:ignore="MissingConstraints" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        app:layout_constraintTop_toBottomOf="@+id/space" />
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/change_direction_button"
+                android:layout_width="300dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/lightblue"
+                android:drawableRight="@drawable/ic_change_direction"
+                android:gravity="left|center"
+                android:text="Direction : PLAGE"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                app:cornerRadius="5dp" />
+
+            <Button
+                android:id="@+id/see_all_lines"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/red"
+                android:drawable="@drawable/ic_change_direction"
+                android:gravity="left|center"
+                android:text="Voir toutes les lignes"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                app:cornerRadius="5dp" />
+
+        </LinearLayout>
+
+        <Space
+            android:id="@+id/space2"
+            android:layout_width="20dp"
+            android:layout_height="15dp"
+            tools:ignore="MissingConstraints" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/next_bus_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="110dp" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

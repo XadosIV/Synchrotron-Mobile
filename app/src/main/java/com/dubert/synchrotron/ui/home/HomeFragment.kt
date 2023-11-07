@@ -5,11 +5,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.dubert.synchrotron.ArretAdapter
+import com.dubert.synchrotron.FavsHomeArretAdapter
 import com.dubert.synchrotron.R
 import com.dubert.synchrotron.databinding.FragmentHomeBinding
 import com.dubert.synchrotron.model.Arret
@@ -25,6 +27,7 @@ class HomeFragment : Fragment() {
     private lateinit var searchList: ArrayList<String>
 
     private lateinit var recyclerView : RecyclerView
+    private lateinit var recyclerViewFavs : RecyclerView
     private val fragment = this
 
     // This property is only valid between onCreateView and
@@ -53,6 +56,32 @@ class HomeFragment : Fragment() {
         }
         return list
     }
+
+    private fun getFavData(): ArrayList<String> {
+        val arretStorage = ArretJSONFileStorage.getInstance()
+        val lines = arretStorage!!.getLines()
+        val listLines = arrayListOf<Line>()
+        val letters = arrayOf('A', 'B', 'C', 'D');
+        for (letter in letters) {
+            listLines.add(lines.getValue(letter))
+        }
+
+        val listFavorites = arrayListOf<String>()
+        for (line in listLines) {
+            for (arretCode in line.forward + line.backward) {
+                val arret = arretStorage.findByCode(arretCode)
+                if (arret != null) {
+                    if (arretCode !in listFavorites) {
+                        if (arret.isFavorite) {
+                            listFavorites.add(arretCode)
+                        }
+                    }
+                }
+            }
+        }
+        return listFavorites
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -64,8 +93,15 @@ class HomeFragment : Fragment() {
         recyclerView = root.findViewById(R.id.arrets_recycler_view)
         searchView = root.findViewById(R.id.search_home)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        val storage = ArretJSONFileStorage.getInstance()
-        recyclerView.adapter = ArretAdapter(arrayListOf(), storage.getLine('A')!!, "home")
+        recyclerView.adapter = FavsHomeArretAdapter(arrayListOf(), "home")
+
+        recyclerViewFavs = root.findViewById(R.id.fav_recycler_view)
+        recyclerViewFavs.layoutManager = LinearLayoutManager(context)
+        recyclerViewFavs.adapter = FavsHomeArretAdapter(getFavData(),"favs")
+        recyclerViewFavs.adapter!!.notifyDataSetChanged()
+
+        val favs = root.findViewById<TextView>(R.id.favs)
+        favs.isVisible = getFavData().size != 0
 
         dataList = getArretData()
         searchList = arrayListOf()
@@ -81,6 +117,9 @@ class HomeFragment : Fragment() {
                 searchList.clear()
                 val searchText = newText!!.lowercase(Locale.getDefault())
                 if (searchText.isNotEmpty()) {
+                    favs.isVisible = false
+                    recyclerView.isVisible = true
+                    recyclerViewFavs.isVisible = false
                     dataList.forEach{
                         if (it.name.lowercase(Locale.getDefault()).startsWith(searchText)) {
                             searchList.add(it.code)
@@ -90,8 +129,11 @@ class HomeFragment : Fragment() {
                 } else {
                     searchList.clear()
                     recyclerView.adapter!!.notifyDataSetChanged()
+                    favs.isVisible = getFavData().size != 0
+                    recyclerViewFavs.isVisible = getFavData().size != 0
+                    recyclerView.isVisible = false
                 }
-                recyclerView.adapter = ArretAdapter(searchList, storage.getLine('A')!!, "home")
+                recyclerView.adapter = FavsHomeArretAdapter(searchList, "favs")
                 return false
             }
         })

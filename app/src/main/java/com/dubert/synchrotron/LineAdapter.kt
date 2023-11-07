@@ -45,9 +45,6 @@ class LineAdapter(private val linesList: ArrayList<Line>, private val recyclerVi
 
         val terminusList = currentLine.getTerminus()
 
-        Log.i("TERMINUS"+position+"FINAL", terminusList[0].name)
-        Log.i("TERMINUS"+position+"FINAL", terminusList[1].name)
-
         holder.lineLogo.setImageResource(Line.charToLineLogo(currentLine.name))
         holder.terminus1Text.text = terminusList[0].name
         holder.terminus2Text.text = terminusList[1].name

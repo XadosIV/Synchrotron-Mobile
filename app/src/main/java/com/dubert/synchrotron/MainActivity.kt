@@ -29,11 +29,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_charge) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val imgRotate = findViewById<ImageView>(R.id.loading_circle)
-        val rotation = AnimationUtils.loadAnimation(this, R.anim.rotate)
         val myIntent = Intent(this, ApplicationActivity::class.java)
-        rotation.fillAfter = true
-        imgRotate.startAnimation(rotation)
         GlobalScope.launch{
             suspend {
                 updateDatabase()
@@ -78,6 +74,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_charge) {
 
                             if (arretStorage.findByCode(code) == null){
                                 var oppositeCode = ""
+                                if (arret.has("oppositeStopPoint")) {
+                                    oppositeCode = arret.getJSONObject("oppositeStopPoint").getString("id")
+                                }
 
                                 // ============= CAS SPECIFIQUE =============
                                 if (code == "PRSON" && !arret.has("isTerminus")) continue

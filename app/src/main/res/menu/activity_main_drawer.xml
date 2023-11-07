@@ -9,10 +9,6 @@
             android:icon="@drawable/ic_menu_home"
             android:title="@string/menu_home" />
         <item
-            android:id="@+id/nav_favs"
-            android:icon="@drawable/ic_menu_favs"
-            android:title="@string/menu_favs" />
-        <item
             android:id="@+id/nav_lines"
             android:icon="@drawable/ic_menu_lines"
             android:title="@string/menu_lines" />

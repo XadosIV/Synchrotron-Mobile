@@ -27,7 +27,7 @@ class Arret(
     }
 
     fun urlToNextBus(body:String, line:Char?): ArrayList<NextBus> {
-        val list = ArrayList<NextBus>()
+        val list = arrayListOf<NextBus>()
         var elements = body.split("<div class=\"nq-c-Direction-content\">")
         if (elements.size == 1) return list
         elements = elements.drop(1)

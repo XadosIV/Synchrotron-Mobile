@@ -12,12 +12,6 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_favs"
-        android:name="com.dubert.synchrotron.ui.favs.FavsFragment"
-        android:label="@string/menu_favs"
-        tools:layout="@layout/fragment_favs" />
-
-    <fragment
         android:id="@+id/nav_lines"
         android:name="com.dubert.synchrotron.ui.lines.LinesFragment"
         android:label="@string/menu_lines"

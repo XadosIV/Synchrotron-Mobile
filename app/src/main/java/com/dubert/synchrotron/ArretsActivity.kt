@@ -25,7 +25,7 @@ class ArretsActivity: AppCompatActivity(R.layout.activity_arrets_list) {
 
         arretsRecyclerView.setHasFixedSize(true)
         arretsRecyclerView.layoutManager = LinearLayoutManager(this)
-        arretsRecyclerView.adapter = ArretAdapter(line.forward, line,"line")
+        arretsRecyclerView.adapter = ArretAdapter(line.forward, line)
 
         val logo = findViewById<ImageView>(R.id.lineLogo)
         logo.setImageResource(line.logo())
@@ -40,11 +40,11 @@ class ArretsActivity: AppCompatActivity(R.layout.activity_arrets_list) {
             if (direction == 0) {
                 direction = 1
                 change.text = "Direction : " + storage.findByCode(line.forward.get(0))!!.name.uppercase()
-                arretsRecyclerView.adapter = ArretAdapter(line.backward, line, "line")
+                arretsRecyclerView.adapter = ArretAdapter(line.backward, line)
             } else {
                 direction = 0
                 change.text = "Direction : " + storage.findByCode(line.backward.get(0))!!.name.uppercase()
-                arretsRecyclerView.adapter = ArretAdapter(line.forward, line,"line")
+                arretsRecyclerView.adapter = ArretAdapter(line.forward, line)
             }
         }
     }
