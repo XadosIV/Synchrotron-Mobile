@@ -14,7 +14,7 @@ abstract class FileStorage<T>(private val context: Context, name: String, extens
     private var nextId = 1
 
     init {
-        //read()
+        read()
     }
 
     protected  abstract fun create(id:Int, obj: T): T
