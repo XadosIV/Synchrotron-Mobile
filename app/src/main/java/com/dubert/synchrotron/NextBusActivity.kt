@@ -1,5 +1,6 @@
 package com.dubert.synchrotron
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +16,7 @@ import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.dubert.synchrotron.model.Arret
+import com.dubert.synchrotron.model.Line
 import com.dubert.synchrotron.model.NextBus
 import com.dubert.synchrotron.storage.ArretJSONFileStorage
 
@@ -24,20 +26,21 @@ class NextBusActivity : AppCompatActivity(R.layout.activity_arret) {
     private lateinit var myAdapter : NextBusAdapter
     private lateinit var items : ArrayList<NextBus>
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val b = intent.extras
-        var code = b!!.getString("codeArret")!!
+        val code = b!!.getString("codeArret")!!
         val storage = ArretJSONFileStorage.getInstance()
-        var lineName : Char? = null
+        var lineParam : Char? = null
         var direction = 0
-        var pressed = true
-        var base : ArrayList<String> = arrayListOf()
-        var notBase : ArrayList<String> = arrayListOf()
-        if (b.containsKey("line")){
-            lineName = b.getChar("line")
-            base = storage.getLine(b.getChar("line"))!!.forward
-            notBase = storage.getLine(b.getChar("line"))!!.backward
+        var pressed = false
+        val base : ArrayList<String>
+        val notBase : ArrayList<String>
+        var line : Line? = null
+        if (b.containsKey("line")) {
+            lineParam = b.getChar("line")
+            line = storage.getLine(lineParam)
         }
         val recyclerview = findViewById<RecyclerView>(R.id.next_bus_recycler_view)
 
@@ -51,69 +54,90 @@ class NextBusActivity : AppCompatActivity(R.layout.activity_arret) {
         val queue = Volley.newRequestQueue(this)
 
         val see_all_lines = findViewById<Button>(R.id.see_all_lines)
-        see_all_lines.setOnClickListener {
-            pressed = !pressed
-            if (pressed) {
-                see_all_lines.setBackgroundColor(Color.argb(255,255,99,71))
-                if (b.containsKey("line")){
-                    lineName = b.getChar("line")
+        if (lineParam != null){
+            see_all_lines.isVisible = true
+            see_all_lines.setOnClickListener {
+                pressed = !pressed
+                if (!pressed) {
+                    see_all_lines.setBackgroundColor(Color.argb(255,255,99,71))
+                    if (b.containsKey("line")){
+                        lineParam = b.getChar("line")
+                    }
+                } else {
+                    see_all_lines.setBackgroundColor(Color.argb(255,134, 146, 247))
+                    lineParam = null
                 }
-            } else {
-                see_all_lines.setBackgroundColor(Color.argb(255,134, 146, 247))
-                lineName = null
+                if (direction == 0) {
+                    val req = StringRequest(Request.Method.GET, "https://live.synchro-bus.fr/" + arret.code, {
+                        items = arret.urlToNextBus(it, lineParam)
+                        recyclerview.adapter = NextBusAdapter(items)
+                        noBus.isVisible = items.size == 0
+                    }, {
+                    })
+                    queue.add(req)
+                } else {
+                    val req = StringRequest(Request.Method.GET, "https://live.synchro-bus.fr/" + arret.opposite, {
+                        items = arret.urlToNextBus(it, lineParam)
+                        recyclerview.adapter = NextBusAdapter(items)
+                        noBus.isVisible = items.size == 0
+                    }, {
+                        Toast.makeText(this, "La requête n'a pas reçu de réponse...", Toast.LENGTH_LONG).show()
+                    })
+                    queue.add(req)
+                }
             }
-            if (direction == 0) {
-                val req = StringRequest(Request.Method.GET, "https://live.synchro-bus.fr/" + storage.findByCode(code)!!.opposite, {
-                    items = arret.urlToNextBus(it, lineName)
-                }, {
-                })
-                queue.add(req)
-            } else {
-                val req = StringRequest(Request.Method.GET, "https://live.synchro-bus.fr/" + code, {
-                    items = arret.urlToNextBus(it, lineName)
-                }, {
-                })
-                queue.add(req)
-            }
-            recyclerview.adapter = NextBusAdapter(items)
-            noBus.isVisible = items.size == 0
+        }else{
+            see_all_lines.isVisible = false
         }
+
 
         val button_change_direction = findViewById<Button>(R.id.change_direction_button)
-        if (lineName == null) {
-            see_all_lines.isVisible = false
+        if (line == null) {
             button_change_direction.isVisible = false
         } else {
-            if (code !in base) {
-                base = storage.getLine(b.getChar("line"))!!.backward
-                notBase = storage.getLine(b.getChar("line"))!!.forward
+            button_change_direction.isVisible = true
+            if (line.forward.contains(arret.code)) {
+                base = line.forward
+                notBase = line.backward
+            }else{
+                base = line.backward
+                notBase = line.forward
             }
-            button_change_direction.text = "Direction : " + storage.findByCode(base.get(0))!!.name.uppercase()
-        }
-        button_change_direction.setOnClickListener {
-            if (direction == 0) {
-                direction = 1
-                button_change_direction.text = "Direction : " + storage.findByCode(notBase.get(0))!!.name.uppercase()
-                val req = StringRequest(Request.Method.GET, "https://live.synchro-bus.fr/"+ storage.findByCode(code)!!.opposite, {
-                    items = arret.urlToNextBus(it, lineName)
-                }, {
-                })
-                queue.add(req)
-            } else {
-                direction = 0
-                button_change_direction.text = "Direction : " + storage.findByCode(base.get(0))!!.name.uppercase()
-                val req = StringRequest(Request.Method.GET, "https://live.synchro-bus.fr/"+code, {
-                    items = arret.urlToNextBus(it, lineName)
-                }, {
-                })
-                queue.add(req)
+            button_change_direction.text = "Direction : " + storage.findByCode(base[base.size-1])!!.name.uppercase()
+
+            button_change_direction.setOnClickListener {
+                Log.i("DIR", ""+direction)
+                if (direction == 0) {
+                    direction = 1
+                    button_change_direction.text = "Direction : " + storage.findByCode(notBase[notBase.size-1])!!.name.uppercase()
+                    val req = StringRequest(Request.Method.GET, "https://live.synchro-bus.fr/"+ arret.opposite, {
+                        items = arret.urlToNextBus(it, lineParam)
+                        recyclerview.adapter = NextBusAdapter(items)
+                        noBus.isVisible = items.size == 0
+                    }, {
+                        Toast.makeText(this, "La requête n'a pas reçu de réponse...", Toast.LENGTH_LONG).show()
+                    })
+                    queue.add(req)
+                } else {
+                    direction = 0
+                    button_change_direction.text = "Direction : " + storage.findByCode(base[base.size-1])!!.name.uppercase()
+                    val req = StringRequest(Request.Method.GET, "https://live.synchro-bus.fr/"+arret.code, {
+                        items = arret.urlToNextBus(it, lineParam)
+                        recyclerview.adapter = NextBusAdapter(items)
+                        noBus.isVisible = items.size == 0
+                    }, {
+                        Toast.makeText(this, "La requête n'a pas reçu de réponse...", Toast.LENGTH_LONG).show()
+                    })
+                    queue.add(req)
+                }
             }
-            recyclerview.adapter = NextBusAdapter(items)
-            noBus.isVisible = items.size == 0
         }
 
-        val req = StringRequest(Request.Method.GET, "https://live.synchro-bus.fr/"+code, {
-            items = arret.urlToNextBus(it, lineName)
+
+
+
+        val req = StringRequest(Request.Method.GET, "https://live.synchro-bus.fr/"+arret.code, {
+            items = arret.urlToNextBus(it, lineParam)
             noBus.isVisible = items.size == 0
 
             myAdapter = NextBusAdapter(items)
@@ -121,6 +145,7 @@ class NextBusActivity : AppCompatActivity(R.layout.activity_arret) {
             recyclerview.layoutManager = LinearLayoutManager(this);
 
         }, {
+            Toast.makeText(this, "La requête n'a pas reçu de réponse...", Toast.LENGTH_LONG).show()
         })
         queue.add(req)
 

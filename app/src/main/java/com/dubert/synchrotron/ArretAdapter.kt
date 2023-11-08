@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
@@ -52,6 +53,7 @@ class ArretAdapter (private val arretsList : ArrayList<String>, private val line
                 holder.lineText.text = text
 
             }, {
+                Toast.makeText(holder.itemView.context, "La requête n'a pas reçu de réponse...", Toast.LENGTH_LONG).show()
             })
             queue.add(req)
         }
