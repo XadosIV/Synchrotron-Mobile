@@ -36,11 +36,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:layout_marginLeft="150dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/lineLogo"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginLeft="10dp">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <LinearLayout
                     android:id="@+id/textLayout"
@@ -76,13 +75,13 @@
                         android:id="@+id/timeText"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
                         android:layout_weight="1"
+                        android:background="@drawable/back_text"
                         android:gravity="center"
                         android:text="14h30"
-                        android:background="@drawable/back_text"
                         android:textColor="@color/lightblue"
-                        android:textSize="25sp"
-                        android:layout_marginBottom="10dp"/>
+                        android:textSize="25sp" />
 
 
                 </LinearLayout>
