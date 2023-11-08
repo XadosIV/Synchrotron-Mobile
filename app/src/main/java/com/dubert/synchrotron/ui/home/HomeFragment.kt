@@ -94,6 +94,7 @@ class HomeFragment : Fragment() {
         searchView = root.findViewById(R.id.search_home)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = FavsHomeArretAdapter(arrayListOf(), "home")
+        recyclerView.isVisible = false
 
         recyclerViewFavs = root.findViewById(R.id.fav_recycler_view)
         recyclerViewFavs.layoutManager = LinearLayoutManager(context)
