@@ -54,19 +54,68 @@ class NextBusActivity : AppCompatActivity(R.layout.activity_arret) {
 
         val queue = Volley.newRequestQueue(this)
 
+        val button_change_direction = findViewById<Button>(R.id.change_direction_button)
+
+        button_change_direction.isVisible = true
+        if (line != null){
+            if (line.forward.contains(arret.code)) {
+                base = line.forward
+                notBase = line.backward
+            }else{
+                base = line.backward
+                notBase = line.forward
+            }
+            button_change_direction.text = "Direction : " + storage.findByCode(base[base.size-1])!!.name.uppercase()
+        }else{
+            button_change_direction.text = "Changer de sens"
+        }
+        button_change_direction.setOnClickListener {
+            if (direction == 0) {
+                direction = 1
+                if (!pressed) if (notBase != null) button_change_direction.text = "Direction : " + storage.findByCode(notBase[notBase.size-1])!!.name.uppercase()
+                val req = StringRequest(Request.Method.GET, "https://live.synchro-bus.fr/"+ arret.opposite, {
+                    items = arret.urlToNextBus(it, lineParam)
+                    recyclerview.adapter = NextBusAdapter(items)
+                    noBus.isVisible = items.size == 0
+                }, {
+                    Toast.makeText(this, "La requête n'a pas reçu de réponse...", Toast.LENGTH_LONG).show()
+                })
+                queue.add(req)
+            } else {
+                direction = 0
+                if (!pressed) if (base != null) button_change_direction.text = "Direction : " + storage.findByCode(base[base.size-1])!!.name.uppercase()
+                val req = StringRequest(Request.Method.GET, "https://live.synchro-bus.fr/"+arret.code, {
+                    items = arret.urlToNextBus(it, lineParam)
+                    recyclerview.adapter = NextBusAdapter(items)
+                    noBus.isVisible = items.size == 0
+                }, {
+                    Toast.makeText(this, "La requête n'a pas reçu de réponse...", Toast.LENGTH_LONG).show()
+                })
+                queue.add(req)
+            }
+        }
+
         val see_all_lines = findViewById<Button>(R.id.see_all_lines)
         if (lineParam != null){
             see_all_lines.isVisible = true
             see_all_lines.setOnClickListener {
                 pressed = !pressed
                 if (!pressed) {
+                    // Quand on affiche qu'une ligne
                     see_all_lines.setBackgroundColor(Color.argb(255,255,99,71))
                     if (b.containsKey("line")){
                         lineParam = b.getChar("line")
+                        if (direction == 0){
+                            if (base != null) button_change_direction.text = "Direction : " + storage.findByCode(base[base.size-1])!!.name.uppercase()
+                        }else{
+                            if (notBase != null) button_change_direction.text = "Direction : " + storage.findByCode(notBase[notBase.size-1])!!.name.uppercase()
+                        }
                     }
                 } else {
+                    // Quand on affiche toutes les lignes
                     see_all_lines.setBackgroundColor(Color.argb(255,134, 146, 247))
                     lineParam = null
+                    button_change_direction.text = "Changer de sens"
                 }
                 if (direction == 0) {
                     val req = StringRequest(Request.Method.GET, "https://live.synchro-bus.fr/" + arret.code, {
@@ -89,48 +138,6 @@ class NextBusActivity : AppCompatActivity(R.layout.activity_arret) {
             }
         }else{
             see_all_lines.isVisible = false
-        }
-
-
-        val button_change_direction = findViewById<Button>(R.id.change_direction_button)
-
-        button_change_direction.isVisible = true
-        if (line != null){
-            if (line.forward.contains(arret.code)) {
-                base = line.forward
-                notBase = line.backward
-            }else{
-                base = line.backward
-                notBase = line.forward
-            }
-            button_change_direction.text = "Direction : " + storage.findByCode(base[base.size-1])!!.name.uppercase()
-        }else{
-            button_change_direction.text = "Changer de sens"
-        }
-        button_change_direction.setOnClickListener {
-            if (direction == 0) {
-                direction = 1
-                if (notBase != null) button_change_direction.text = "Direction : " + storage.findByCode(notBase[notBase.size-1])!!.name.uppercase()
-                val req = StringRequest(Request.Method.GET, "https://live.synchro-bus.fr/"+ arret.opposite, {
-                    items = arret.urlToNextBus(it, lineParam)
-                    recyclerview.adapter = NextBusAdapter(items)
-                    noBus.isVisible = items.size == 0
-                }, {
-                    Toast.makeText(this, "La requête n'a pas reçu de réponse...", Toast.LENGTH_LONG).show()
-                })
-                queue.add(req)
-            } else {
-                direction = 0
-                if (base != null) button_change_direction.text = "Direction : " + storage.findByCode(base[base.size-1])!!.name.uppercase()
-                val req = StringRequest(Request.Method.GET, "https://live.synchro-bus.fr/"+arret.code, {
-                    items = arret.urlToNextBus(it, lineParam)
-                    recyclerview.adapter = NextBusAdapter(items)
-                    noBus.isVisible = items.size == 0
-                }, {
-                    Toast.makeText(this, "La requête n'a pas reçu de réponse...", Toast.LENGTH_LONG).show()
-                })
-                queue.add(req)
-            }
         }
 
 
