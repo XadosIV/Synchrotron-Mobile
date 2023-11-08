@@ -25,7 +25,7 @@
             android:layout_width="330dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -40,7 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="UNIVERSITE JACOB"
+                android:text="@string/base_arret_name"
                 android:textColor="@color/black"
                 android:textSize="30sp" />
 
@@ -54,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Prochain bus dans : 12 minutes"
+                android:text="@string/base_next_bus"
                 android:textColor="@color/lightblue"
                 android:textSize="18sp" />
 
@@ -71,7 +71,7 @@
             android:layout_height="40dp"
             android:layout_gravity="top|right"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
             android:src="@drawable/ic_star"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

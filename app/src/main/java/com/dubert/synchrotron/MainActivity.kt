@@ -3,8 +3,6 @@ package com.dubert.synchrotron
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.animation.AnimationUtils
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -13,10 +11,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.dubert.synchrotron.activities.ApplicationActivity
 import com.dubert.synchrotron.model.Arret
 import com.dubert.synchrotron.model.Line
 import com.dubert.synchrotron.storage.ArretJSONFileStorage
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -33,15 +31,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_charge) {
         GlobalScope.launch{
             suspend {
                 updateDatabase()
-                Log.i("STARTED", "JAI STARTED")
                 startActivity(myIntent)
             }.invoke()
         }
     }
 
     private suspend fun updateDatabase() {
-        Log.i("STARTED", "JAI RECU LE CALL")
-
         // Create Storage Instance
         ArretJSONFileStorage.init(this)
 
@@ -108,7 +103,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_charge) {
                 },
                 { error ->
                     Toast.makeText(this, "Website didn't respond", Toast.LENGTH_LONG).show();
-                    Log.i("LINE_RESPONSE", "FAILED")
                     responseLength++
                 }
             )
@@ -117,7 +111,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_charge) {
             queue.add(jsonObjectRequest)
         }
         while (responseLength < 4){
-            Log.i("STARTED", ""+responseLength)
             delay(50)
         }
     }

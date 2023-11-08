@@ -1,14 +1,13 @@
-package com.dubert.synchrotron
+package com.dubert.synchrotron.activities
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.dubert.synchrotron.model.Arret
-import com.dubert.synchrotron.model.Line
+import com.dubert.synchrotron.adapters.ArretAdapter
+import com.dubert.synchrotron.R
 import com.dubert.synchrotron.storage.ArretJSONFileStorage
 
 class ArretsActivity: AppCompatActivity(R.layout.activity_arrets_list) {

@@ -23,4 +23,15 @@
 
     <string name="oui">Oui</string>
     <string name="non">Non</string>
+    <string name="line_logo">Line logo</string>
+    <string name="base_arret_name">PLAGE</string>
+    <string name="direction">Direction :</string>
+    <string name="base_hour">14h30</string>
+    <string name="see_all_lines">Voir toutes les lignes</string>
+    <string name="base_direction">Direction : PLAGE</string>
+    <string name="no_bus">Aucun départ proche</string>
+    <string name="charging">Chargement des données...</string>
+    <string name="favs">Favoris</string>
+    <string name="base_next_bus">Prochain bus à 10:30</string>
+    <string name="tiret"> - </string>
 </resources>

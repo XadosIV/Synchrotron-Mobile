@@ -46,7 +46,6 @@ class Arret(
             }
 
         }
-        Log.i("SIZEOF", ""+list.size)
         return list
     }
 }

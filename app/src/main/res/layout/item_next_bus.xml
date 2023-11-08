@@ -26,7 +26,7 @@
                 android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:src="@drawable/line_a"
-                android:contentDescription="Line logo"
+                android:contentDescription="@string/line_logo"
                 android:layout_margin="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +51,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Direction : "
+                        android:text="@string/direction"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
 
@@ -60,7 +60,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="PLAGE"
+                        android:text="@string/base_arret_name"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
 
@@ -74,12 +74,12 @@
                     <TextView
                         android:id="@+id/timeText"
                         android:layout_width="100dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
                         android:layout_marginBottom="10dp"
                         android:layout_weight="1"
                         android:background="@drawable/back_text"
                         android:gravity="center"
-                        android:text="14h30"
+                        android:text="@string/base_hour"
                         android:textColor="@color/lightblue"
                         android:textSize="25sp" />
 

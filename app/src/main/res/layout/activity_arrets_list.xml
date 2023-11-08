@@ -16,7 +16,7 @@
             android:id="@+id/lineLogo"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:contentDescription="Line logo"
+            android:contentDescription="@string/line_logo"
             android:src="@drawable/line_a"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -43,15 +43,15 @@
             android:id="@+id/change_direction_button"
             android:layout_width="300dp"
             android:layout_height="50dp"
-            android:layout_marginLeft="20dp"
-            android:textSize="15dp"
-            android:drawableRight="@drawable/ic_change_direction"
+            android:layout_marginStart="20dp"
+            android:textSize="15sp"
+            android:drawableEnd="@drawable/ic_change_direction"
             android:layout_marginTop="10dp"
             android:textColor="@color/black"
             app:cornerRadius="5dp"
             android:backgroundTint="@color/lightblue"
             android:gravity="left|center"
-            android:text="Direction : PLAGE" />
+            android:text="@string/base_direction" />
 
         <Space
             android:id="@+id/space"
@@ -62,7 +62,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/arrets_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:paddingBottom="110dp"/>
 

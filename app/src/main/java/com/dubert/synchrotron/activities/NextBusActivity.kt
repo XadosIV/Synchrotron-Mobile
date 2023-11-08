@@ -1,4 +1,4 @@
-package com.dubert.synchrotron
+package com.dubert.synchrotron.activities
 
 import android.annotation.SuppressLint
 import android.graphics.Color
@@ -15,7 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.dubert.synchrotron.model.Arret
+import com.dubert.synchrotron.R
+import com.dubert.synchrotron.adapters.NextBusAdapter
 import com.dubert.synchrotron.model.Line
 import com.dubert.synchrotron.model.NextBus
 import com.dubert.synchrotron.storage.ArretJSONFileStorage

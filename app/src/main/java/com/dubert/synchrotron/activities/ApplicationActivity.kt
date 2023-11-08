@@ -1,8 +1,6 @@
-package com.dubert.synchrotron
+package com.dubert.synchrotron.activities
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -11,14 +9,8 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
+import com.dubert.synchrotron.R
 import com.dubert.synchrotron.databinding.ActivityMenuBinding
-import com.dubert.synchrotron.model.Arret
-import com.dubert.synchrotron.model.Line
-import com.dubert.synchrotron.storage.ArretJSONFileStorage
 
 
 class ApplicationActivity : AppCompatActivity() {

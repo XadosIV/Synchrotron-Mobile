@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.favs.FavsFragment"
+    tools:context=".ui.lines.LinesFragment"
     android:orientation="vertical">
 
     <Space
@@ -25,7 +25,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/lines_recycler_view"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content" />
 

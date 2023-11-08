@@ -1,23 +1,18 @@
-package com.dubert.synchrotron
+package com.dubert.synchrotron.adapters
 
 import android.content.Intent
 import android.location.Location
-import android.location.LocationManager
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.view.isVisible
-import androidx.core.widget.NestedScrollView
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.dubert.synchrotron.model.Arret
+import com.dubert.synchrotron.R
+import com.dubert.synchrotron.activities.ArretsActivity
+import com.dubert.synchrotron.activities.NextBusActivity
 import com.dubert.synchrotron.model.Line
 import com.dubert.synchrotron.storage.ArretJSONFileStorage
 import java.lang.Math.pow
@@ -46,8 +41,8 @@ class LineAdapter(private val linesList: ArrayList<Line>, private val recyclerVi
         val terminusList = currentLine.getTerminus()
 
         holder.lineLogo.setImageResource(Line.charToLineLogo(currentLine.name))
-        holder.terminus1Text.text = terminusList[0].name
-        holder.terminus2Text.text = terminusList[1].name
+        holder.terminus1Text.text = terminusList[0].name + " "
+        holder.terminus2Text.text = " " + terminusList[1].name
 
         holder.itemView.setOnClickListener {
             val myIntent = Intent(holder.itemView.context, ArretsActivity::class.java)

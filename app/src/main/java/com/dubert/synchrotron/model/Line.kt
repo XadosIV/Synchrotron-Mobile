@@ -30,9 +30,6 @@ class Line(
                 list.add(arret)
             }
         }
-        if (list.size != 2){
-            Log.i("ERROR", list[0].name)
-        }
         return list
     }
 

@@ -1,22 +1,14 @@
-package com.dubert.synchrotron
+package com.dubert.synchrotron.adapters
 
-import android.content.Context
-import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
+import com.dubert.synchrotron.R
 import com.dubert.synchrotron.model.Line
 import com.dubert.synchrotron.model.NextBus
-import com.dubert.synchrotron.storage.ArretJSONFileStorage
 
 class NextBusAdapter (private val nextBusList : ArrayList<NextBus>) : RecyclerView.Adapter<NextBusAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -31,7 +23,7 @@ class NextBusAdapter (private val nextBusList : ArrayList<NextBus>) : RecyclerVi
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val bus = nextBusList[position]
 
-        holder.terminusText.text = bus.direction
+        holder.terminusText.text = " " + bus.direction
         holder.timeText.text = bus.horaire
         holder.logo.setImageResource(Line.charToLineLogo(bus.line))
     }
