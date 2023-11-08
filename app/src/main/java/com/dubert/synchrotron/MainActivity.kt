@@ -2,7 +2,6 @@ package com.dubert.synchrotron
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -32,6 +31,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_charge) {
             suspend {
                 updateDatabase()
                 startActivity(myIntent)
+                finish()
             }.invoke()
         }
     }

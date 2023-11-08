@@ -36,8 +36,8 @@ class NextBusActivity : AppCompatActivity(R.layout.activity_arret) {
         var lineParam : Char? = null
         var direction = 0
         var pressed = false
-        val base : ArrayList<String>
-        val notBase : ArrayList<String>
+        var base : ArrayList<String>? = null
+        var notBase : ArrayList<String>? = null
         var line : Line? = null
         if (b.containsKey("line")) {
             lineParam = b.getChar("line")
@@ -93,10 +93,9 @@ class NextBusActivity : AppCompatActivity(R.layout.activity_arret) {
 
 
         val button_change_direction = findViewById<Button>(R.id.change_direction_button)
-        if (line == null) {
-            button_change_direction.isVisible = false
-        } else {
-            button_change_direction.isVisible = true
+
+        button_change_direction.isVisible = true
+        if (line != null){
             if (line.forward.contains(arret.code)) {
                 base = line.forward
                 notBase = line.backward
@@ -105,32 +104,32 @@ class NextBusActivity : AppCompatActivity(R.layout.activity_arret) {
                 notBase = line.forward
             }
             button_change_direction.text = "Direction : " + storage.findByCode(base[base.size-1])!!.name.uppercase()
-
-            button_change_direction.setOnClickListener {
-                Log.i("DIR", ""+direction)
-                if (direction == 0) {
-                    direction = 1
-                    button_change_direction.text = "Direction : " + storage.findByCode(notBase[notBase.size-1])!!.name.uppercase()
-                    val req = StringRequest(Request.Method.GET, "https://live.synchro-bus.fr/"+ arret.opposite, {
-                        items = arret.urlToNextBus(it, lineParam)
-                        recyclerview.adapter = NextBusAdapter(items)
-                        noBus.isVisible = items.size == 0
-                    }, {
-                        Toast.makeText(this, "La requête n'a pas reçu de réponse...", Toast.LENGTH_LONG).show()
-                    })
-                    queue.add(req)
-                } else {
-                    direction = 0
-                    button_change_direction.text = "Direction : " + storage.findByCode(base[base.size-1])!!.name.uppercase()
-                    val req = StringRequest(Request.Method.GET, "https://live.synchro-bus.fr/"+arret.code, {
-                        items = arret.urlToNextBus(it, lineParam)
-                        recyclerview.adapter = NextBusAdapter(items)
-                        noBus.isVisible = items.size == 0
-                    }, {
-                        Toast.makeText(this, "La requête n'a pas reçu de réponse...", Toast.LENGTH_LONG).show()
-                    })
-                    queue.add(req)
-                }
+        }else{
+            button_change_direction.text = "Changer de sens"
+        }
+        button_change_direction.setOnClickListener {
+            if (direction == 0) {
+                direction = 1
+                if (notBase != null) button_change_direction.text = "Direction : " + storage.findByCode(notBase[notBase.size-1])!!.name.uppercase()
+                val req = StringRequest(Request.Method.GET, "https://live.synchro-bus.fr/"+ arret.opposite, {
+                    items = arret.urlToNextBus(it, lineParam)
+                    recyclerview.adapter = NextBusAdapter(items)
+                    noBus.isVisible = items.size == 0
+                }, {
+                    Toast.makeText(this, "La requête n'a pas reçu de réponse...", Toast.LENGTH_LONG).show()
+                })
+                queue.add(req)
+            } else {
+                direction = 0
+                if (base != null) button_change_direction.text = "Direction : " + storage.findByCode(base[base.size-1])!!.name.uppercase()
+                val req = StringRequest(Request.Method.GET, "https://live.synchro-bus.fr/"+arret.code, {
+                    items = arret.urlToNextBus(it, lineParam)
+                    recyclerview.adapter = NextBusAdapter(items)
+                    noBus.isVisible = items.size == 0
+                }, {
+                    Toast.makeText(this, "La requête n'a pas reçu de réponse...", Toast.LENGTH_LONG).show()
+                })
+                queue.add(req)
             }
         }
 
